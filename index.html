@@ -841,6 +841,208 @@
         }
 
         /* =====================
+           VISOR 3D (cotizador)
+        ===================== */
+        .cotizador-viewer-card {
+            width: 100%;
+            max-width: 640px;
+            margin: 0 auto 28px;
+            background: rgba(255, 255, 255, .06);
+            border: 1px solid rgba(255, 255, 255, .15);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            backdrop-filter: blur(8px);
+            box-shadow: var(--shadow-lg);
+            text-align: left;
+        }
+
+        .viewer-dropzone {
+            border: 2px dashed rgba(255, 255, 255, .25);
+            border-radius: var(--radius);
+            padding: 48px 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .viewer-dropzone:hover,
+        .viewer-dropzone.dragover {
+            border-color: var(--magenta-light);
+            background: rgba(224, 0, 106, .08);
+        }
+
+        .viewer-dropzone-icon {
+            font-size: 2.4rem;
+            margin-bottom: 12px;
+        }
+
+        .viewer-dropzone p {
+            color: rgba(255, 255, 255, .75);
+            font-size: .92rem;
+        }
+
+        .viewer-dropzone strong {
+            color: var(--white);
+        }
+
+        .viewer-dropzone input[type="file"] {
+            display: none;
+        }
+
+        .viewer-hint {
+            font-size: .78rem;
+            color: rgba(255, 255, 255, .45);
+            margin-top: 10px;
+        }
+
+        .viewer-canvas-wrap {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            border-radius: var(--radius);
+            overflow: hidden;
+            background: radial-gradient(circle at 50% 40%, #223066 0%, #0F1A44 100%);
+            display: none;
+            touch-action: none;
+        }
+
+        .viewer-canvas-wrap.active {
+            display: block;
+        }
+
+        .viewer-canvas-wrap canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            display: block;
+        }
+
+        .viewer-toolbar {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            right: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .viewer-file-info {
+            background: rgba(13, 13, 13, .55);
+            backdrop-filter: blur(6px);
+            border-radius: 100px;
+            padding: 6px 14px;
+            font-size: .78rem;
+            color: var(--white);
+            max-width: 70%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            pointer-events: auto;
+        }
+
+        .viewer-reset-btn {
+            pointer-events: auto;
+            background: rgba(13, 13, 13, .55);
+            border: 1px solid rgba(255, 255, 255, .2);
+            color: var(--white);
+            width: 32px;
+            height: 32px;
+            flex-shrink: 0;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-family: var(--font);
+            transition: var(--transition);
+        }
+
+        .viewer-reset-btn:hover {
+            background: var(--magenta);
+            border-color: var(--magenta);
+        }
+
+        .viewer-loading {
+            position: absolute;
+            inset: 0;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background: rgba(15, 26, 68, .78);
+            z-index: 3;
+            color: var(--white);
+            font-size: .85rem;
+        }
+
+        .viewer-spinner {
+            width: 34px;
+            height: 34px;
+            border: 3px solid rgba(255, 255, 255, .2);
+            border-top-color: var(--magenta-light);
+            border-radius: 50%;
+            animation: viewer-spin .8s linear infinite;
+        }
+
+        @keyframes viewer-spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .viewer-rotate-hint {
+            position: absolute;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: .72rem;
+            color: rgba(255, 255, 255, .6);
+            background: rgba(13, 13, 13, .4);
+            padding: 4px 12px;
+            border-radius: 100px;
+            pointer-events: none;
+            z-index: 2;
+            white-space: nowrap;
+        }
+
+        .viewer-error {
+            margin-top: 16px;
+            background: rgba(224, 0, 106, .12);
+            border: 1px solid rgba(224, 0, 106, .4);
+            border-radius: var(--radius);
+            padding: 12px 16px;
+            color: #FFD7E8;
+            font-size: .85rem;
+            display: none;
+        }
+
+        .viewer-error.visible {
+            display: block;
+        }
+
+        @media (max-width: 480px) {
+            .viewer-dropzone {
+                padding: 32px 16px;
+            }
+
+            .viewer-canvas-wrap {
+                aspect-ratio: 1 / 1;
+            }
+
+            .viewer-rotate-hint {
+                font-size: .66rem;
+            }
+        }
+
+        /* =====================
            TIENDA
         ===================== */
         #tienda {
@@ -1375,22 +1577,48 @@
         <div class="container">
             <div class="cotizador-inner">
                 <div class="cotizador-icon-wrap" aria-hidden="true">📐</div>
-                <span class="section-label" style="color:rgba(255,255,255,.6)" data-i18n="cot.label">Cotizador
+                <span class="section-label" data-i18n="cot.label">Cotizador
                     online</span>
                 <h2 class="section-title" id="cotizador-title" data-i18n="cot.title">Conocé el precio de tu pieza al
                     instante</h2>
                 <p class="section-subtitle" data-i18n="cot.subtitle">
-                    Próximamente vas a poder subir tu archivo y recibir una cotización automática en segundos.
+                    Subí tu archivo y visualizá tu pieza en 3D al instante, desde cualquier ángulo.
                 </p>
                 <div class="cotizador-formats" aria-label="Formatos aceptados">
                     <span class="format-chip">.STL</span>
                     <span class="format-chip">.3MF</span>
                 </div>
+
+                <div class="cotizador-viewer-card fade-up">
+                    <div class="viewer-dropzone" id="viewer-dropzone" role="button" tabindex="0"
+                        aria-label="Subir archivo STL o 3MF para previsualizar en 3D">
+                        <div class="viewer-dropzone-icon" aria-hidden="true">📁</div>
+                        <p><strong>Arrastrá tu archivo acá</strong><br>o hacé clic para seleccionarlo</p>
+                        <p class="viewer-hint">Formatos .STL y .3MF · Máximo 25MB</p>
+                        <input type="file" id="viewer-file-input" accept=".stl,.3mf">
+                    </div>
+
+                    <div class="viewer-canvas-wrap" id="viewer-canvas-wrap">
+                        <div class="viewer-toolbar">
+                            <span class="viewer-file-info" id="viewer-file-info"></span>
+                            <button type="button" class="viewer-reset-btn" id="viewer-reset-btn"
+                                title="Quitar archivo" aria-label="Quitar archivo">✕</button>
+                        </div>
+                        <div class="viewer-loading" id="viewer-loading">
+                            <div class="viewer-spinner" aria-hidden="true"></div>
+                            <span>Cargando modelo…</span>
+                        </div>
+                        <span class="viewer-rotate-hint">🖱️ Arrastrá para rotar · Scroll para zoom</span>
+                    </div>
+
+                    <p class="viewer-error" id="viewer-error" role="alert"></p>
+                </div>
+
                 <div class="cotizador-coming">
                     <p data-i18n-html="cot.coming">
-                        Desde acá vas a poder <strong>subir tu archivo STL o 3MF</strong> y obtener automáticamente una
-                        estimación del costo de impresión según el material, el tiempo y el uso de filamento. El
-                        cotizador está en desarrollo — ¡muy pronto disponible!
+                        Ya podés <strong>previsualizar tu pieza en 3D</strong> antes de consultarnos. El cálculo
+                        automático de precio según material, tiempo de impresión y uso de filamento está en
+                        desarrollo — ¡muy pronto disponible!
                     </p>
                 </div>
             </div>
@@ -1561,6 +1789,556 @@
 
         /* ===== YEAR ===== */
         document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+
+    <!-- ===== VISOR 3D (cotizador) — Three.js vía CDN, sin build step ===== -->
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { STLLoader } from 'three/addons/loaders/STLLoader.js';
+        import { ThreeMFLoader } from 'three/addons/loaders/3MFLoader.js';
+        import * as fflate from 'three/addons/libs/fflate.module.js';
+
+        (() => {
+            const MAX_FILE_SIZE = 25 * 1024 * 1024;
+            const MODEL_COLOR = 0xEDEDF5;
+
+            const dropzone = document.getElementById('viewer-dropzone');
+            const fileInput = document.getElementById('viewer-file-input');
+            const canvasWrap = document.getElementById('viewer-canvas-wrap');
+            const fileInfo = document.getElementById('viewer-file-info');
+            const resetBtn = document.getElementById('viewer-reset-btn');
+            const loadingEl = document.getElementById('viewer-loading');
+            const errorEl = document.getElementById('viewer-error');
+
+            if (!dropzone || !canvasWrap) return;
+
+            let scene, camera, renderer, controls, currentModel;
+
+            function showError(msg) {
+                errorEl.textContent = msg;
+                errorEl.classList.add('visible');
+            }
+
+            function clearError() {
+                errorEl.textContent = '';
+                errorEl.classList.remove('visible');
+            }
+
+            function resizeViewer() {
+                if (!renderer) return;
+                const w = canvasWrap.clientWidth || 1;
+                const h = canvasWrap.clientHeight || 1;
+                renderer.setSize(w, h, false);
+                camera.aspect = w / h;
+                camera.updateProjectionMatrix();
+            }
+
+            function animate() {
+                requestAnimationFrame(animate);
+                if (!canvasWrap.classList.contains('active')) return;
+                controls.update();
+                renderer.render(scene, camera);
+            }
+
+            function initViewer() {
+                if (renderer) return;
+
+                scene = new THREE.Scene();
+                camera = new THREE.PerspectiveCamera(45, 1, 0.1, 5000);
+
+                renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+                renderer.outputColorSpace = THREE.SRGBColorSpace;
+                renderer.toneMapping = THREE.ACESFilmicToneMapping;
+                renderer.toneMappingExposure = 1.1;
+                canvasWrap.insertBefore(renderer.domElement, canvasWrap.firstChild);
+
+                controls = new OrbitControls(camera, renderer.domElement);
+                controls.enableDamping = true;
+                controls.dampingFactor = 0.08;
+                controls.autoRotate = true;
+                controls.autoRotateSpeed = 1.4;
+                controls.addEventListener('start', () => { controls.autoRotate = false; });
+
+                // Luces desde varios ángulos para que se vean bien los detalles de la pieza
+                scene.add(new THREE.AmbientLight(0xffffff, 0.55));
+                scene.add(new THREE.HemisphereLight(0xaebfff, 0x1a1030, 0.6));
+
+                const key = new THREE.DirectionalLight(0xffffff, 1.1);
+                key.position.set(5, 8, 6);
+                scene.add(key);
+
+                const fill = new THREE.DirectionalLight(0xbcd0ff, 0.55);
+                fill.position.set(-6, 2, -4);
+                scene.add(fill);
+
+                const rim = new THREE.DirectionalLight(0xff6fb0, 0.6);
+                rim.position.set(-3, -4, 5);
+                scene.add(rim);
+
+                const top = new THREE.DirectionalLight(0xffffff, 0.4);
+                top.position.set(0, 10, -2);
+                scene.add(top);
+
+                new ResizeObserver(resizeViewer).observe(canvasWrap);
+                requestAnimationFrame(animate);
+            }
+
+            function frameObject(object) {
+                const box = new THREE.Box3().setFromObject(object);
+                const size = box.getSize(new THREE.Vector3());
+                const center = box.getCenter(new THREE.Vector3());
+                object.position.sub(center);
+
+                const maxDim = Math.max(size.x, size.y, size.z) || 1;
+                const distance = maxDim * 2.2;
+                camera.position.set(distance * 0.6, distance * 0.5, distance);
+                camera.near = maxDim / 100;
+                camera.far = maxDim * 100;
+                camera.updateProjectionMatrix();
+
+                controls.target.set(0, 0, 0);
+                controls.minDistance = maxDim * 0.3;
+                controls.maxDistance = maxDim * 8;
+                controls.update();
+            }
+
+            function disposeMaterial(material) {
+                Object.values(material).forEach(v => v && v.isTexture && v.dispose());
+                material.dispose();
+            }
+
+            function clearModel() {
+                if (!currentModel) return;
+                scene.remove(currentModel);
+                currentModel.traverse(obj => {
+                    if (obj.geometry) obj.geometry.dispose();
+                    if (obj.material) {
+                        (Array.isArray(obj.material) ? obj.material : [obj.material]).forEach(disposeMaterial);
+                    }
+                });
+                currentModel = null;
+            }
+
+            function makeMaterial() {
+                return new THREE.MeshStandardMaterial({ color: MODEL_COLOR, metalness: 0.15, roughness: 0.55 });
+            }
+
+            function loadSTL(buffer) {
+                const geometry = new STLLoader().parse(buffer);
+                const mesh = new THREE.Mesh(geometry, makeMaterial());
+                const group = new THREE.Group();
+                group.add(mesh);
+                return group;
+            }
+
+            function findRootModelPath(zip) {
+                const relsKey = Object.keys(zip).find(k => /^_rels\/\.rels$/i.test(k));
+                if (!relsKey) return null;
+                const text = new TextDecoder().decode(zip[relsKey]);
+                const doc = new DOMParser().parseFromString(text, 'application/xml');
+                const rel = [...doc.querySelectorAll('Relationship')]
+                    .find(r => (r.getAttribute('Type') || '').toLowerCase().includes('3dmodel'));
+                if (!rel) return null;
+                let target = rel.getAttribute('Target') || '';
+                if (target.startsWith('/')) target = target.slice(1);
+                return target;
+            }
+
+            // Algunos slicers (Bambu Studio, OrcaSlicer, PrusaSlicer "guardar proyecto")
+            // exportan 3MF con la malla real en un archivo .model separado (extensión
+            // "production", p:path) referenciado desde el modelo raíz. El 3MFLoader de
+            // Three.js arma los objetos en el mismo orden en que aparecen dentro del ZIP:
+            // si el raíz aparece antes que la pieza referenciada, revienta con un
+            // TypeError al no encontrarla todavía. Reordenamos el ZIP (pieza(s) primero,
+            // raíz al final) para que el loader las resuelva sin tocar su código.
+            function repackFromZip(zip) {
+                const modelKeys = Object.keys(zip).filter(k => /\.model$/i.test(k));
+                if (modelKeys.length <= 1) return null;
+
+                const rootPath = findRootModelPath(zip);
+                if (!rootPath || !zip[rootPath]) return null;
+
+                const nested = modelKeys.filter(k => k !== rootPath);
+                if (nested.length === 0) return null;
+
+                const ordered = {};
+                Object.keys(zip).forEach(k => { if (k !== rootPath) ordered[k] = zip[k]; });
+                ordered[rootPath] = zip[rootPath];
+
+                return fflate.zipSync(ordered, { level: 0 });
+            }
+
+            // --- Color de pintado multi-material (MMU) de Bambu Studio / OrcaSlicer / PrusaSlicer ---
+            //
+            // Estos slicers no usan la extensión oficial de materiales de 3MF (colorgroup/
+            // basematerials + pid/p1), que es lo único que entiende el 3MFLoader de Three.js.
+            // En cambio guardan, por triángulo, un atributo "paint_color" (Bambu) /
+            // "slic3rpe:mmu_segmentation" (Prusa) — la MISMA codificación bajo dos nombres
+            // distintos (PrusaSlicer lee ambos por compatibilidad con archivos de Bambu).
+            // Es un bitstream empaquetado en dígitos hexadecimales que codifica, por
+            // triángulo original, o bien un "estado" (state 0 = sin pintar → usa el extrusor
+            // por defecto del objeto; state N>=1 = Extrusor N), o bien una subdivisión del
+            // triángulo en sub-triángulos con distinto estado cada uno (pintado en degradé).
+            // Algoritmo verificado contra el código fuente real de PrusaSlicer
+            // (FacetsAnnotation::set_triangle_from_string / get_triangle_as_string en
+            // Model.cpp, y TriangleSelector::serialize/deserialize + decode_leaf_state en
+            // TriangleSelector.cpp) y contrastado visualmente contra la miniatura que el
+            // propio Bambu Studio guarda dentro del 3MF (Metadata/top_1.png).
+            //
+            // Para triángulos subdivididos (pintado en degradé) no reconstruimos la
+            // geometría dividida — tomamos el color de la primera sub-región como
+            // aproximación de todo el triángulo original.
+            function decodeTriangleState(str) {
+                if (!str) return 0; // NONE: sin pintar, usa el extrusor por defecto del objeto
+                const bits = [];
+                for (let i = str.length - 1; i >= 0; i--) {
+                    const ch = str[i].toUpperCase();
+                    let dec;
+                    if (ch >= '0' && ch <= '9') dec = ch.charCodeAt(0) - 48;
+                    else if (ch >= 'A' && ch <= 'F') dec = 10 + (ch.charCodeAt(0) - 65);
+                    else continue;
+                    for (let b = 0; b < 4; b++) bits.push((dec >> b) & 1);
+                }
+                let pos = 0;
+                const nextNibble = () => {
+                    let n = 0;
+                    for (let i = 0; i < 4; i++) { n |= (bits[pos] || 0) << i; pos++; }
+                    return n;
+                };
+                function decodeLeafState(code) {
+                    if ((code & 0b1100) !== 0b1100) return code >> 2;
+                    const second = nextNibble();
+                    if (second !== 0b1110) return second + 3;
+                    const lo = nextNibble();
+                    const hi = nextNibble();
+                    return (lo | (hi << 4)) + 17;
+                }
+                function readNode() {
+                    const code = nextNibble();
+                    const splitSides = code & 0b11;
+                    if (splitSides === 0) return decodeLeafState(code);
+                    let firstLeaf = null;
+                    for (let c = 0; c < splitSides + 1; c++) {
+                        const leaf = readNode();
+                        if (firstLeaf === null) firstLeaf = leaf;
+                    }
+                    return firstLeaf;
+                }
+                return readNode();
+            }
+
+            function parseTransformAttr(str) {
+                if (!str) return null;
+                const v = str.trim().split(/\s+/).map(Number);
+                if (v.length !== 12 || v.some(Number.isNaN)) return null;
+                const m = new THREE.Matrix4();
+                m.set(
+                    v[0], v[3], v[6], v[9],
+                    v[1], v[4], v[7], v[10],
+                    v[2], v[5], v[8], v[11],
+                    0, 0, 0, 1
+                );
+                return m;
+            }
+
+            function parseModelObjects(xmlText) {
+                const doc = new DOMParser().parseFromString(xmlText, 'application/xml');
+                const objects = {};
+                doc.querySelectorAll('resources > object').forEach(objNode => {
+                    const id = objNode.getAttribute('id');
+                    const data = { id, vertices: null, triangles: null, components: null };
+
+                    const meshNode = objNode.querySelector('mesh');
+                    if (meshNode) {
+                        const vertices = [];
+                        meshNode.querySelectorAll('vertices > vertex').forEach(v => {
+                            vertices.push([
+                                parseFloat(v.getAttribute('x')),
+                                parseFloat(v.getAttribute('y')),
+                                parseFloat(v.getAttribute('z'))
+                            ]);
+                        });
+                        const triangles = [];
+                        meshNode.querySelectorAll('triangles > triangle').forEach(t => {
+                            triangles.push({
+                                v1: parseInt(t.getAttribute('v1'), 10),
+                                v2: parseInt(t.getAttribute('v2'), 10),
+                                v3: parseInt(t.getAttribute('v3'), 10),
+                                paint: t.getAttribute('paint_color') || t.getAttribute('slic3rpe:mmu_segmentation') || ''
+                            });
+                        });
+                        data.vertices = vertices;
+                        data.triangles = triangles;
+                    }
+
+                    const componentsNode = objNode.querySelector('components');
+                    if (componentsNode) {
+                        data.components = [...componentsNode.querySelectorAll('component')].map(c => ({
+                            objectId: c.getAttribute('objectid'),
+                            transform: parseTransformAttr(c.getAttribute('transform'))
+                        }));
+                    }
+
+                    objects[id] = data;
+                });
+                return objects;
+            }
+
+            function readModelSettingsExtruders(zip) {
+                const key = Object.keys(zip).find(k => /Metadata\/model_settings\.config$/i.test(k));
+                const map = {};
+                if (!key) return map;
+                try {
+                    const doc = new DOMParser().parseFromString(new TextDecoder().decode(zip[key]), 'application/xml');
+                    doc.querySelectorAll('object').forEach(objNode => {
+                        const id = objNode.getAttribute('id');
+                        const meta = objNode.querySelector(':scope > metadata[key="extruder"]');
+                        if (id && meta) map[id] = meta.getAttribute('value');
+                    });
+                } catch (err) { /* sin datos de extrusor, se usa color neutro más abajo */ }
+                return map;
+            }
+
+            function readFilamentColours(zip) {
+                const key = Object.keys(zip).find(k => /Metadata\/project_settings\.config$/i.test(k));
+                if (!key) return null;
+                try {
+                    const cfg = JSON.parse(new TextDecoder().decode(zip[key]));
+                    if (Array.isArray(cfg.filament_colour)) return cfg.filament_colour;
+                } catch (err) { /* config no es JSON válido o no tiene filament_colour */ }
+                return null;
+            }
+
+            function stateToColorHex(state, defaultExtruderStr, filamentColours) {
+                let extruderNum;
+                if (!state) {
+                    const d = parseInt(defaultExtruderStr, 10);
+                    extruderNum = (Number.isFinite(d) && d >= 1) ? d : 1;
+                } else {
+                    extruderNum = state; // state N (>=1) === Extrusor N
+                }
+                const hex = filamentColours[extruderNum - 1];
+                return (typeof hex === 'string' && /^#/.test(hex)) ? hex : null;
+            }
+
+            function buildPaintedObjectFromZip(zip) {
+                try {
+                    const decoder = new TextDecoder();
+                    const modelPaths = Object.keys(zip).filter(k => /\.model$/i.test(k));
+                    if (modelPaths.length === 0) return null;
+
+                    const objectsById = {};
+                    modelPaths.forEach(path => {
+                        Object.assign(objectsById, parseModelObjects(decoder.decode(zip[path])));
+                    });
+
+                    const rootPath = findRootModelPath(zip);
+                    if (!rootPath || !zip[rootPath]) return null;
+                    const rootDoc = new DOMParser().parseFromString(decoder.decode(zip[rootPath]), 'application/xml');
+                    const buildItems = [...rootDoc.querySelectorAll('build > item')].map(item => ({
+                        objectId: item.getAttribute('objectid'),
+                        transform: parseTransformAttr(item.getAttribute('transform'))
+                    }));
+                    if (buildItems.length === 0) return null;
+
+                    const filamentColours = readFilamentColours(zip);
+                    if (!filamentColours || filamentColours.length === 0) return null;
+                    const extruderByObject = readModelSettingsExtruders(zip);
+
+                    const positions = [];
+                    const colors = [];
+                    const colorCache = new Map();
+                    const getColor = (hex) => {
+                        let c = colorCache.get(hex);
+                        if (!c) { c = new THREE.Color().setStyle(hex, THREE.SRGBColorSpace); colorCache.set(hex, c); }
+                        return c;
+                    };
+                    const fallback = new THREE.Color(MODEL_COLOR);
+
+                    let trianglesWritten = 0;
+                    function collect(objectId, matrix, inheritedExtruder) {
+                        const obj = objectsById[objectId];
+                        if (!obj) return;
+                        const myExtruder = extruderByObject[objectId] || inheritedExtruder;
+
+                        if (obj.triangles && obj.vertices) {
+                            for (const tri of obj.triangles) {
+                                const state = decodeTriangleState(tri.paint);
+                                const hex = stateToColorHex(state, myExtruder, filamentColours);
+                                const color = hex ? getColor(hex) : fallback;
+                                for (const vi of [tri.v1, tri.v2, tri.v3]) {
+                                    const v = obj.vertices[vi];
+                                    if (v) {
+                                        const p = new THREE.Vector3(v[0], v[1], v[2]);
+                                        if (matrix) p.applyMatrix4(matrix);
+                                        positions.push(p.x, p.y, p.z);
+                                    } else {
+                                        positions.push(0, 0, 0);
+                                    }
+                                    colors.push(color.r, color.g, color.b);
+                                }
+                                trianglesWritten++;
+                            }
+                        }
+
+                        if (obj.components) {
+                            for (const comp of obj.components) {
+                                const childMatrix = comp.transform ? matrix.clone().multiply(comp.transform) : matrix.clone();
+                                collect(comp.objectId, childMatrix, myExtruder);
+                            }
+                        }
+                    }
+
+                    for (const item of buildItems) {
+                        collect(item.objectId, item.transform || new THREE.Matrix4(), null);
+                    }
+                    if (trianglesWritten === 0) return null;
+
+                    const geometry = new THREE.BufferGeometry();
+                    geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+                    geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+                    geometry.computeVertexNormals();
+
+                    const material = new THREE.MeshStandardMaterial({ vertexColors: true, metalness: 0.15, roughness: 0.55 });
+                    const group = new THREE.Group();
+                    group.add(new THREE.Mesh(geometry, material));
+                    return group;
+                } catch (err) {
+                    console.warn('No se pudo reconstruir el color pintado del 3MF, se usa color neutro', err);
+                    return null;
+                }
+            }
+
+            function load3MF(buffer) {
+                let zip = null;
+                try {
+                    zip = fflate.unzipSync(new Uint8Array(buffer));
+                } catch (err) {
+                    zip = null;
+                }
+
+                if (zip) {
+                    const painted = buildPaintedObjectFromZip(zip);
+                    if (painted) return painted;
+                }
+
+                const patched = (zip && repackFromZip(zip)) || buffer;
+                const object = new ThreeMFLoader().parse(patched);
+                object.traverse(child => {
+                    if (child.isMesh && !child.material) child.material = makeMaterial();
+                });
+                return object;
+            }
+
+            function hasVisibleGeometry(object) {
+                let found = false;
+                object.traverse(child => {
+                    if (child.isMesh && child.geometry && child.geometry.attributes.position && child.geometry.attributes.position.count > 0) {
+                        found = true;
+                    }
+                });
+                return found;
+            }
+
+            function returnToDropzone() {
+                clearModel();
+                canvasWrap.classList.remove('active');
+                dropzone.style.display = '';
+                fileInput.value = '';
+                fileInfo.textContent = '';
+            }
+
+            function resetViewer() {
+                returnToDropzone();
+                clearError();
+            }
+
+            function handleFile(file) {
+                clearError();
+                if (!file) return;
+
+                const name = file.name || '';
+                const dot = name.lastIndexOf('.');
+                const ext = dot >= 0 ? name.slice(dot).toLowerCase() : '';
+                if (ext !== '.stl' && ext !== '.3mf') {
+                    showError('Formato no soportado. Subí un archivo .STL o .3MF.');
+                    return;
+                }
+                if (file.size > MAX_FILE_SIZE) {
+                    showError(`El archivo pesa ${(file.size / 1024 / 1024).toFixed(1)}MB. El máximo permitido es 25MB.`);
+                    return;
+                }
+
+                dropzone.style.display = 'none';
+                canvasWrap.classList.add('active');
+                loadingEl.style.display = 'flex';
+                initViewer();
+                resizeViewer();
+
+                const reader = new FileReader();
+                reader.onerror = () => {
+                    loadingEl.style.display = 'none';
+                    showError('No se pudo leer el archivo. Probá nuevamente.');
+                };
+                reader.onload = (e) => {
+                    try {
+                        const buffer = e.target.result;
+                        const object = ext === '.stl' ? loadSTL(buffer) : load3MF(buffer);
+                        if (!hasVisibleGeometry(object)) {
+                            throw new Error('empty-geometry');
+                        }
+                        clearModel();
+                        currentModel = object;
+                        scene.add(object);
+                        frameObject(object);
+                        controls.autoRotate = true;
+                        fileInfo.textContent = `${name} · ${(file.size / 1024 / 1024).toFixed(1)}MB`;
+                    } catch (err) {
+                        console.error(err);
+                        if (ext === '.3mf') {
+                            showError('No se pudo previsualizar este 3MF. Si es un archivo de proyecto con varias piezas/plataformas (típico de Bambu Studio, OrcaSlicer o PrusaSlicer), probá exportar la pieza como 3MF simple (una sola pieza) o subí el STL.');
+                        } else {
+                            showError('No se pudo procesar el archivo. Verificá que sea un STL válido.');
+                        }
+                        returnToDropzone();
+                    } finally {
+                        loadingEl.style.display = 'none';
+                    }
+                };
+                reader.readAsArrayBuffer(file);
+            }
+
+            dropzone.addEventListener('click', () => fileInput.click());
+            dropzone.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    fileInput.click();
+                }
+            });
+            fileInput.addEventListener('change', () => handleFile(fileInput.files[0]));
+
+            ['dragenter', 'dragover'].forEach(evt => {
+                dropzone.addEventListener(evt, (e) => { e.preventDefault(); dropzone.classList.add('dragover'); });
+            });
+            ['dragleave', 'drop'].forEach(evt => {
+                dropzone.addEventListener(evt, (e) => { e.preventDefault(); dropzone.classList.remove('dragover'); });
+            });
+            dropzone.addEventListener('drop', (e) => {
+                handleFile(e.dataTransfer.files && e.dataTransfer.files[0]);
+            });
+
+            resetBtn.addEventListener('click', resetViewer);
+        })();
     </script>
 </body>
 
