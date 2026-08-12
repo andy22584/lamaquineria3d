@@ -1,37 +1,1567 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>La Maquinería 3D</title>
-  <style>
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      font-family: sans-serif;
-      text-align: center;
-      padding: 1rem;
-      box-sizing: border-box;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="La Maquinería 3D — Impresión 3D. PLA, PETG, TPU y más. Cotizá tu pieza online.">
+    <title>La Maquinería 3D | Impresión 3D</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        /* =====================
+           DESIGN TOKENS
+        ===================== */
+        :root {
+            --magenta: #E0006A;
+            --magenta-light: #FF2E8E;
+            --magenta-dark: #A8004F;
+            --navy: #1A2B6D;
+            --navy-light: #253BA0;
+            --navy-dark: #0F1A44;
+            --black: #0D0D0D;
+            --white: #FFFFFF;
+            --gray-50: #F8F8FB;
+            --gray-100: #EDEDF5;
+            --gray-300: #B0B0C8;
+            --gray-500: #6B6B88;
+            --gray-700: #3A3A52;
 
-    img {
-      max-width: 90%;
-      width: 400px;
-      height: auto;
-    }
+            --font: 'Inter', sans-serif;
+            --radius: 12px;
+            --radius-lg: 20px;
+            --shadow-sm: 0 2px 8px rgba(26, 43, 109, .08);
+            --shadow-md: 0 8px 32px rgba(26, 43, 109, .14);
+            --shadow-lg: 0 20px 60px rgba(26, 43, 109, .20);
+            --transition: .3s cubic-bezier(.4, 0, .2, 1);
+        }
 
-    h1 {
-      margin-top: 1rem;
-    }
-  </style>
+        /* =====================
+           RESET & BASE
+        ===================== */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            font-family: var(--font);
+            color: var(--gray-700);
+            background: var(--white);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        /* =====================
+           UTILITY
+        ===================== */
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .section {
+            padding: 90px 0;
+        }
+
+        .section-label {
+            display: inline-block;
+            font-size: .75rem;
+            font-weight: 700;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: var(--magenta);
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 800;
+            color: var(--navy-dark);
+            line-height: 1.2;
+            margin-bottom: 18px;
+        }
+
+        .section-subtitle {
+            font-size: 1.05rem;
+            color: var(--gray-500);
+            max-width: 560px;
+            line-height: 1.7;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            border-radius: var(--radius);
+            font-family: var(--font);
+            font-size: .95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+
+        .btn-primary {
+            background: var(--magenta);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: var(--magenta-light);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(224, 0, 106, .35);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: rgba(255, 255, 255, .85);
+            border-color: rgba(255, 255, 255, .3);
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, .1);
+            color: var(--white);
+            transform: translateY(-2px);
+        }
+
+        /* =====================
+           NAV
+        ===================== */
+        #navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid transparent;
+            transition: var(--transition);
+            padding: 0 24px;
+        }
+
+        #navbar.scrolled {
+            border-bottom-color: var(--gray-100);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .nav-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 68px;
+        }
+
+        .nav-logo img {
+            height: 40px;
+            width: auto;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-links a {
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: .9rem;
+            font-weight: 500;
+            color: var(--gray-700);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            background: var(--gray-100);
+            color: var(--navy);
+        }
+
+        .nav-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 9px 20px;
+            background: var(--magenta);
+            color: var(--white) !important;
+            border-radius: 8px;
+            font-size: .9rem;
+            font-weight: 600;
+            transition: var(--transition);
+            margin-left: 8px;
+        }
+
+        .nav-cta:hover {
+            background: var(--magenta-light) !important;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(224, 0, 106, .30);
+        }
+
+        .lang-toggle {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            background: var(--gray-100);
+            border-radius: 8px;
+            padding: 3px;
+            margin-left: 12px;
+        }
+
+        .lang-btn {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: .78rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            color: var(--gray-500);
+            font-family: var(--font);
+            transition: var(--transition);
+        }
+
+        .lang-btn.active {
+            background: var(--white);
+            color: var(--navy-dark);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, .10);
+        }
+
+        .nav-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 4px;
+            background: none;
+            border: none;
+        }
+
+        .nav-toggle span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: var(--navy-dark);
+            border-radius: 2px;
+            transition: var(--transition);
+        }
+
+        .nav-toggle.open span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .nav-toggle.open span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .nav-toggle.open span:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -5px);
+        }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 68px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, .97);
+            backdrop-filter: blur(16px);
+            z-index: 999;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .mobile-menu.open {
+            display: flex;
+        }
+
+        .mobile-menu a {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--navy-dark);
+            padding: 12px 24px;
+            border-radius: var(--radius);
+            transition: var(--transition);
+        }
+
+        .mobile-menu a:hover {
+            background: var(--gray-100);
+            color: var(--magenta);
+        }
+
+        .mobile-menu .nav-cta {
+            margin-top: 8px;
+            font-size: 1.1rem;
+            padding: 14px 32px;
+        }
+
+        /* =====================
+           HERO
+        ===================== */
+        #hero {
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 55%, #2D1B6B 100%);
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            padding-top: 68px;
+        }
+
+        #hero::before {
+            content: '';
+            position: absolute;
+            top: -120px;
+            right: -80px;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(224, 0, 106, .30) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        #hero::after {
+            content: '';
+            position: absolute;
+            bottom: -100px;
+            left: -60px;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(37, 59, 160, .40) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .hero-grid {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, .03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, .03) 1px, transparent 1px);
+            background-size: 48px 48px;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            padding: 80px 0;
+        }
+
+        .hero-title {
+            font-size: clamp(2.4rem, 5.5vw, 3.8rem);
+            font-weight: 900;
+            color: var(--white);
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+
+        .hero-title .accent {
+            color: var(--magenta-light);
+        }
+
+        .hero-desc {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, .72);
+            line-height: 1.75;
+            margin-bottom: 36px;
+            max-width: 480px;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .hero-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-logo-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-logo-wrap::before {
+            content: '';
+            position: absolute;
+            width: 340px;
+            height: 340px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(224, 0, 106, .20) 0%, transparent 70%);
+            animation: rotatePulse 8s linear infinite;
+        }
+
+        .hero-logo-wrap::after {
+            content: '';
+            position: absolute;
+            width: 420px;
+            height: 420px;
+            border: 1px solid rgba(255, 255, 255, .07);
+            border-radius: 50%;
+            animation: rotatePulse 12s linear infinite reverse;
+        }
+
+        @keyframes rotatePulse {
+            0% {
+                transform: scale(1) rotate(0);
+            }
+
+            50% {
+                transform: scale(1.05) rotate(180deg);
+            }
+
+            100% {
+                transform: scale(1) rotate(360deg);
+            }
+        }
+
+        .hero-logo-img {
+            width: 280px;
+            height: auto;
+            position: relative;
+            z-index: 2;
+            filter: drop-shadow(0 20px 60px rgba(224, 0, 106, .40));
+            animation: floatImg 5s ease-in-out infinite;
+        }
+
+        @keyframes floatImg {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-12px);
+            }
+        }
+
+        .hero-chip {
+            position: absolute;
+            background: rgba(255, 255, 255, .10);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, .15);
+            border-radius: 100px;
+            padding: 8px 16px;
+            font-size: .78rem;
+            font-weight: 600;
+            color: var(--white);
+            white-space: nowrap;
+            z-index: 3;
+            animation: floatChip 4s ease-in-out infinite;
+        }
+
+        .hero-chip:nth-child(1) {
+            top: 10%;
+            left: -30px;
+            animation-delay: 0s;
+        }
+
+        .hero-chip:nth-child(2) {
+            top: 30%;
+            right: -20px;
+            animation-delay: .8s;
+        }
+
+        .hero-chip:nth-child(3) {
+            bottom: 25%;
+            left: -20px;
+            animation-delay: 1.6s;
+        }
+
+        @keyframes floatChip {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
+        /* =====================
+           SOBRE NOSOTROS
+        ===================== */
+        #sobre-nosotros {
+            background: var(--navy-dark);
+        }
+
+        #sobre-nosotros .section-title {
+            color: var(--white);
+        }
+
+        #sobre-nosotros .section-subtitle {
+            color: rgba(255, 255, 255, .7);
+        }
+
+        .sobre-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 72px;
+            align-items: center;
+        }
+
+        .sobre-image-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, .03) 0%, rgba(255, 255, 255, .06) 100%);
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            aspect-ratio: 1 / 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            padding: 24px;
+        }
+
+        .sobre-image-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            position: relative;
+            z-index: 2;
+            filter: drop-shadow(0 15px 35px rgba(224, 0, 106, .45));
+            animation: floatImg 5s ease-in-out infinite;
+        }
+
+        .sobre-image-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(45deg, rgba(255, 255, 255, .015) 0px, rgba(255, 255, 255, .015) 1px, transparent 1px, transparent 32px);
+        }
+
+        .cube-svg {
+            width: 140px;
+            height: auto;
+            opacity: .85;
+        }
+
+        .sobre-image-wrap {
+            position: relative;
+        }
+
+        .sobre-features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 32px;
+        }
+
+        .sobre-feature {
+            background: rgba(255, 255, 255, .05);
+            border-radius: var(--radius);
+            padding: 18px;
+            border: 1px solid rgba(255, 255, 255, .08);
+            transition: var(--transition);
+        }
+
+        .sobre-feature:hover {
+            border-color: rgba(224, 0, 106, .4);
+            box-shadow: var(--shadow-sm);
+            transform: translateY(-2px);
+        }
+
+        .sobre-feature-icon {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        .sobre-feature h4 {
+            font-size: .9rem;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 4px;
+        }
+
+        .sobre-feature p {
+            font-size: .8rem;
+            color: rgba(255, 255, 255, .6);
+            line-height: 1.5;
+        }
+
+        /* =====================
+           MATERIALES
+        ===================== */
+        #materiales {
+            background: #121D42;
+        }
+
+        #materiales .section-title {
+            color: var(--white);
+        }
+
+        #materiales .section-subtitle {
+            color: rgba(255, 255, 255, .7);
+        }
+
+        .materiales-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 320px));
+            justify-content: center;
+            gap: 24px;
+            margin-top: 52px;
+        }
+
+        .material-card {
+            background: rgba(255, 255, 255, .04);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            border: 1px solid rgba(255, 255, 255, .08);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .material-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--card-accent, var(--magenta));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: var(--transition);
+        }
+
+        .material-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .material-card:hover {
+            border-color: rgba(255, 255, 255, .15);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-4px);
+        }
+
+        .material-badge {
+            display: inline-block;
+            background: var(--badge-bg, rgba(224, 0, 106, .10));
+            color: var(--badge-color, var(--magenta));
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-size: .72rem;
+            font-weight: 700;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+
+        .material-icon {
+            font-size: 2rem;
+            margin-bottom: 12px;
+        }
+
+        .material-card h3 {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--white);
+            margin-bottom: 8px;
+        }
+
+        .material-card p {
+            font-size: .88rem;
+            color: rgba(255, 255, 255, .65);
+            line-height: 1.65;
+            margin-bottom: 16px;
+        }
+
+        .material-uses {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .material-use-tag {
+            background: rgba(255, 255, 255, .06);
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 100px;
+            padding: 3px 10px;
+            font-size: .73rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, .8);
+        }
+
+        .mat-pla {
+            --card-accent: #00B386;
+            --badge-bg: rgba(0, 179, 134, .18);
+            --badge-color: #00E6A8;
+        }
+
+        .mat-petg {
+            --card-accent: #2563EB;
+            --badge-bg: rgba(37, 99, 235, .18);
+            --badge-color: #60A5FA;
+        }
+
+        .mat-tpu {
+            --card-accent: #D97706;
+            --badge-bg: rgba(217, 119, 6, .18);
+            --badge-color: #FBBF24;
+        }
+
+        /* =====================
+           COTIZADOR
+        ===================== */
+        #cotizador {
+            background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 60%, #3D1A80 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #cotizador::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            right: -100px;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(224, 0, 106, .25) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .cotizador-inner {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .cotizador-icon-wrap {
+            width: 90px;
+            height: 90px;
+            background: rgba(255, 255, 255, .08);
+            border: 1px solid rgba(255, 255, 255, .15);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.4rem;
+            margin-bottom: 28px;
+            backdrop-filter: blur(8px);
+        }
+
+        .cotizador-inner .section-title {
+            color: var(--white);
+        }
+
+        .cotizador-inner .section-subtitle {
+            color: rgba(255, 255, 255, .68);
+            margin: 0 auto 36px;
+        }
+
+        .cotizador-formats {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 32px;
+        }
+
+        .format-chip {
+            background: rgba(255, 255, 255, .12);
+            border: 1px solid rgba(255, 255, 255, .2);
+            border-radius: 100px;
+            padding: 6px 16px;
+            font-size: .82rem;
+            font-weight: 600;
+            color: var(--white);
+            backdrop-filter: blur(4px);
+        }
+
+        .cotizador-coming {
+            background: rgba(255, 255, 255, .08);
+            border: 1px solid rgba(255, 255, 255, .15);
+            border-radius: var(--radius-lg);
+            padding: 32px 48px;
+            max-width: 540px;
+            backdrop-filter: blur(8px);
+        }
+
+        .cotizador-coming p {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, .75);
+            line-height: 1.7;
+        }
+
+        .cotizador-coming strong {
+            color: var(--white);
+        }
+
+        /* =====================
+           TIENDA
+        ===================== */
+        #tienda {
+            background: var(--navy-dark);
+        }
+
+        #tienda .section-title {
+            color: var(--white);
+        }
+
+        #tienda .section-subtitle {
+            color: rgba(255, 255, 255, .7);
+        }
+
+        .tienda-inner {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .tienda-visual {
+            background: linear-gradient(135deg, rgba(224, 0, 106, .15) 0%, rgba(37, 59, 160, .2) 100%);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, .1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tienda-visual::before {
+            content: '';
+            position: absolute;
+            top: -40px;
+            right: -40px;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(224, 0, 106, .25) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .tienda-icon {
+            font-size: 5rem;
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .tienda-visual h3 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--white);
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .tienda-visual p {
+            font-size: .9rem;
+            color: rgba(255, 255, 255, .65);
+            position: relative;
+            z-index: 1;
+        }
+
+        .tienda-content .section-subtitle {
+            margin-bottom: 28px;
+        }
+
+        .tienda-perks {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 36px;
+        }
+
+        .tienda-perk {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+
+        .tienda-perk-icon {
+            width: 40px;
+            height: 40px;
+            flex-shrink: 0;
+            background: rgba(255, 255, 255, .08);
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .tienda-perk h4 {
+            font-size: .9rem;
+            font-weight: 700;
+            color: var(--white);
+        }
+
+        .tienda-perk p {
+            font-size: .84rem;
+            color: rgba(255, 255, 255, .6);
+            margin-top: 2px;
+        }
+
+        /* =====================
+           CLIENTES
+        ===================== */
+        #clientes {
+            background: #121D42;
+        }
+
+        #clientes .section-title {
+            color: var(--white);
+        }
+
+        .clientes-inner {
+            text-align: center;
+        }
+
+        .clientes-coming {
+            margin: 48px auto 0;
+            max-width: 560px;
+            background: rgba(255, 255, 255, .04);
+            border-radius: var(--radius-lg);
+            padding: 52px 40px;
+            border: 2px dashed rgba(255, 255, 255, .15);
+        }
+
+        .clientes-coming-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+
+        .clientes-coming p {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, .65);
+        }
+
+        /* =====================
+           CONTACTO
+        ===================== */
+        #contacto {
+            background: var(--navy-dark);
+        }
+
+        #contacto .section-title {
+            color: var(--white);
+        }
+
+        #contacto .section-subtitle {
+            color: rgba(255, 255, 255, .7);
+        }
+
+        .contacto-inner {
+            display: grid;
+            grid-template-columns: 1fr 1.4fr;
+            gap: 72px;
+            align-items: start;
+        }
+
+        .contacto-info .section-subtitle {
+            margin-bottom: 36px;
+        }
+
+        .contacto-card {
+            background: rgba(255, 255, 255, .04);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, .08);
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .contacto-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .contacto-item-icon {
+            width: 54px;
+            height: 54px;
+            background: var(--white);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            padding: 6px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, .15);
+        }
+
+        .contacto-item-text h4 {
+            font-size: .95rem;
+            font-weight: 700;
+            color: var(--white);
+        }
+
+        .contacto-item-text a {
+            font-size: .9rem;
+            color: var(--magenta-light);
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .contacto-item-text a:hover {
+            color: var(--white);
+            text-decoration: underline;
+        }
+
+        /* =====================
+           FOOTER
+        ===================== */
+        footer {
+            background: var(--black);
+            color: rgba(255, 255, 255, .55);
+            padding: 52px 24px 28px;
+        }
+
+        .footer-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+            text-align: center;
+        }
+
+        .footer-logo img {
+            height: 36px;
+            filter: brightness(0) invert(1);
+            opacity: .75;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .footer-links a {
+            font-size: .85rem;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--magenta-light);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, .08);
+            padding-top: 24px;
+            font-size: .8rem;
+            width: 100%;
+        }
+
+        /* =====================
+           SCROLL ANIMATIONS
+        ===================== */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity .6s ease, transform .6s ease;
+        }
+
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* =====================
+           RESPONSIVE
+        ===================== */
+        @media (max-width: 900px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+                padding: 60px 0;
+            }
+
+            .hero-visual {
+                display: none;
+            }
+
+            .sobre-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .sobre-image-wrap {
+                display: none;
+            }
+
+            .tienda-inner {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+
+            .contacto-inner {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+        }
+
+        @media (max-width: 768px) {
+
+            .nav-links,
+            .lang-toggle {
+                display: none;
+            }
+
+            .nav-toggle {
+                display: flex;
+            }
+
+            .section {
+                padding: 64px 0;
+            }
+
+            .sobre-features {
+                grid-template-columns: 1fr;
+            }
+
+            .materiales-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .materiales-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .cotizador-coming {
+                padding: 24px;
+            }
+
+            .clientes-coming,
+            .contacto-card {
+                padding: 32px 20px;
+            }
+        }
+    </style>
 </head>
+
 <body>
-  <img src="logo.png" alt="Logo La Maquinería 3D">
-  <h1>Bienvenidos a La Maquinería 3D</h1>
-  <p>Próximamente más contenido.</p>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav id="navbar" role="navigation" aria-label="Navegación principal">
+        <div class="nav-inner">
+            <a href="#" class="nav-logo" aria-label="La Maquinería 3D — Inicio">
+                <img src="logo.png" alt="La Maquinería 3D">
+            </a>
+            <div class="nav-links" id="nav-links">
+                <a href="#sobre-nosotros" data-i18n="nav.sobre">Sobre nosotros</a>
+                <a href="#materiales" data-i18n="nav.mat">Materiales</a>
+                <a href="#cotizador" data-i18n="nav.cot">Cotizador</a>
+                <a href="#tienda" data-i18n="nav.tienda">Tienda</a>
+                <a href="#clientes" data-i18n="nav.cli">Clientes</a>
+                <a href="#contacto" data-i18n="nav.con">Contacto</a>
+                <a href="https://www.mercadolibre.com.ar" target="_blank" rel="noopener" class="nav-cta">
+                    🛒 <span data-i18n="tienda.cta">Comprar</span>
+                </a>
+            </div>
+            <button class="nav-toggle" id="nav-toggle" aria-label="Abrir menú" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile menu -->
+    <div class="mobile-menu" id="mobile-menu" role="dialog" aria-label="Menú">
+        <a href="#sobre-nosotros" onclick="closeMobileMenu()" data-i18n="nav.sobre">Sobre nosotros</a>
+        <a href="#materiales" onclick="closeMobileMenu()" data-i18n="nav.mat">Materiales</a>
+        <a href="#cotizador" onclick="closeMobileMenu()" data-i18n="nav.cot">Cotizador</a>
+        <a href="#tienda" onclick="closeMobileMenu()" data-i18n="nav.tienda">Tienda</a>
+        <a href="#clientes" onclick="closeMobileMenu()" data-i18n="nav.cli">Clientes</a>
+        <a href="#contacto" onclick="closeMobileMenu()" data-i18n="nav.con">Contacto</a>
+        <a href="https://www.mercadolibre.com.ar" target="_blank" rel="noopener" class="nav-cta">🛒 <span
+                data-i18n="tienda.cta">Comprar</span></a>
+    </div>
+
+    <!-- ===== HERO ===== -->
+    <section id="hero" aria-labelledby="hero-title">
+        <div class="hero-grid"></div>
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1 class="hero-title" id="hero-title">
+                        <span data-i18n="hero.title1">Tus ideas,</span><br>
+                        <span class="accent" data-i18n="hero.title2">en 3D</span>
+                    </h1>
+                    <p class="hero-desc" data-i18n="hero.desc">
+                        Transformamos tus diseños en piezas reales con precisión y calidad. Desde prototipos hasta
+                        producción, estamos para hacerlo posible.
+                    </p>
+                    <div class="hero-actions">
+                        <a href="#cotizador" class="btn btn-primary" id="hero-cta-cotizar">
+                            📐 <span data-i18n="hero.cta1">Cotizar pieza</span>
+                        </a>
+                        <a href="#sobre-nosotros" class="btn btn-outline" id="hero-cta-conocer">
+                            <span data-i18n="hero.cta2">Conocer más</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="hero-visual" aria-hidden="true">
+                    <div class="hero-logo-wrap">
+                        <img src="logo.png" alt="La Maquinería 3D" class="hero-logo-img">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SOBRE NOSOTROS ===== -->
+    <section id="sobre-nosotros" class="section" aria-labelledby="sobre-title">
+        <div class="container">
+            <div class="sobre-grid">
+                <div class="sobre-image-wrap" aria-hidden="true">
+                    <div class="sobre-image-card">
+                        <img src="https://3dpartnershop.es/wp-content/uploads/2026/06/Impresora-3D-FDM-Snapmaker-U1-43843.png"
+                            alt="Impresión 3D">
+                    </div>
+                </div>
+                <div>
+                    <span class="section-label" data-i18n="sobre.label">Sobre nosotros</span>
+                    <h2 class="section-title" id="sobre-title" data-i18n="sobre.title">Pasión por la impresión 3D, al
+                        servicio de tus ideas</h2>
+                    <p class="section-subtitle" data-i18n="sobre.p1">
+                        Somos un emprendimiento apasionado por la tecnología y la fabricación digital. Nacimos con la
+                        convicción de que cualquier persona o empresa debería poder acceder a impresión 3D de calidad,
+                        sin complicaciones y a un precio justo.
+                    </p>
+                    <br>
+                    <p class="section-subtitle" data-i18n="sobre.p2">
+                        Llevamos cada proyecto al siguiente nivel. Ya sea un prototipo funcional, una pieza de repuesto
+                        o un objeto decorativo, lo hacemos realidad con precisión y cuidado.
+                    </p>
+                    <div class="sobre-features">
+                        <div class="sobre-feature fade-up">
+                            <div class="sobre-feature-icon">🎯</div>
+                            <h4 data-i18n="sobre.feat1.title">Alta precisión</h4>
+                            <p data-i18n="sobre.feat1.desc">Tolerancias mínimas para piezas funcionales y prototipos.
+                            </p>
+                        </div>
+                        <div class="sobre-feature fade-up">
+                            <div class="sobre-feature-icon">⚡</div>
+                            <h4 data-i18n="sobre.feat2.title">Entrega rápida</h4>
+                            <p data-i18n="sobre.feat2.desc">Trabajamos para cumplir tus plazos sin resignar calidad.</p>
+                        </div>
+                        <div class="sobre-feature fade-up">
+                            <div class="sobre-feature-icon">🤝</div>
+                            <h4 data-i18n="sobre.feat3.title">Trato personalizado</h4>
+                            <p data-i18n="sobre.feat3.desc">Te acompañamos desde el diseño hasta la pieza terminada.</p>
+                        </div>
+                        <div class="sobre-feature fade-up">
+                            <div class="sobre-feature-icon">💡</div>
+                            <h4 data-i18n="sobre.feat4.title">Asesoramiento</h4>
+                            <p data-i18n="sobre.feat4.desc">Te ayudamos a elegir el material y configuración ideal.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== MATERIALES ===== -->
+    <section id="materiales" class="section" aria-labelledby="materiales-title">
+        <div class="container">
+            <span class="section-label" data-i18n="mat.label">Materiales</span>
+            <h2 class="section-title" id="materiales-title" data-i18n="mat.title">¿Con qué imprimimos?</h2>
+            <p class="section-subtitle" data-i18n="mat.subtitle">Trabajamos con materiales de primera calidad. Cada
+                filamento tiene características únicas para distintas necesidades.</p>
+
+            <div class="materiales-grid">
+                <div class="material-card mat-pla fade-up" id="card-pla">
+                    <div class="material-badge" data-i18n="mat.pla.badge">Más popular</div>
+                    <div class="material-icon">🟢</div>
+                    <h3>PLA</h3>
+                    <p data-i18n="mat.pla.desc">El filamento más utilizado en impresión 3D. Fácil de imprimir, con
+                        buenos acabados y una amplia variedad de colores. Ideal para la mayoría de proyectos.</p>
+                    <div class="material-uses">
+                        <span class="material-use-tag" data-i18n="mat.pla.use1">Prototipos</span>
+                        <span class="material-use-tag" data-i18n="mat.pla.use2">Decoración</span>
+                        <span class="material-use-tag" data-i18n="mat.pla.use3">Maquetas</span>
+                        <span class="material-use-tag" data-i18n="mat.pla.use4">Educación</span>
+                    </div>
+                </div>
+                <div class="material-card mat-petg fade-up" id="card-petg">
+                    <div class="material-badge" style="background:rgba(37,99,235,.12);color:#1D4ED8;"
+                        data-i18n="mat.petg.badge">Resistente</div>
+                    <div class="material-icon">🔵</div>
+                    <h3>PETG</h3>
+                    <p data-i18n="mat.petg.desc">Combina la facilidad del PLA con mayor resistencia mecánica y química.
+                        Soporta temperaturas más altas y es semitransparente.</p>
+                    <div class="material-uses">
+                        <span class="material-use-tag" data-i18n="mat.petg.use1">Piezas técnicas</span>
+                        <span class="material-use-tag" data-i18n="mat.petg.use2">Contenedores</span>
+                        <span class="material-use-tag" data-i18n="mat.petg.use3">Automotriz</span>
+                    </div>
+                </div>
+                <div class="material-card mat-tpu fade-up" id="card-tpu">
+                    <div class="material-badge" style="background:rgba(217,119,6,.12);color:#B45309;"
+                        data-i18n="mat.tpu.badge">Flexible</div>
+                    <div class="material-icon">🟡</div>
+                    <h3>TPU</h3>
+                    <p data-i18n="mat.tpu.desc">Material flexible y elástico, resistente a impactos y abrasión. Perfecto
+                        cuando la pieza necesita doblarse o absorber golpes.</p>
+                    <div class="material-uses">
+                        <span class="material-use-tag" data-i18n="mat.tpu.use1">Juntas</span>
+                        <span class="material-use-tag" data-i18n="mat.tpu.use2">Fundas</span>
+                        <span class="material-use-tag" data-i18n="mat.tpu.use3">Calzado</span>
+                        <span class="material-use-tag" data-i18n="mat.tpu.use4">Amortiguadores</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== COTIZADOR ===== -->
+    <section id="cotizador" class="section" aria-labelledby="cotizador-title">
+        <div class="container">
+            <div class="cotizador-inner">
+                <div class="cotizador-icon-wrap" aria-hidden="true">📐</div>
+                <span class="section-label" style="color:rgba(255,255,255,.6)" data-i18n="cot.label">Cotizador
+                    online</span>
+                <h2 class="section-title" id="cotizador-title" data-i18n="cot.title">Conocé el precio de tu pieza al
+                    instante</h2>
+                <p class="section-subtitle" data-i18n="cot.subtitle">
+                    Próximamente vas a poder subir tu archivo y recibir una cotización automática en segundos.
+                </p>
+                <div class="cotizador-formats" aria-label="Formatos aceptados">
+                    <span class="format-chip">.STL</span>
+                    <span class="format-chip">.3MF</span>
+                </div>
+                <div class="cotizador-coming">
+                    <p data-i18n-html="cot.coming">
+                        Desde acá vas a poder <strong>subir tu archivo STL o 3MF</strong> y obtener automáticamente una
+                        estimación del costo de impresión según el material, el tiempo y el uso de filamento. El
+                        cotizador está en desarrollo — ¡muy pronto disponible!
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== TIENDA ===== -->
+    <section id="tienda" class="section" aria-labelledby="tienda-title">
+        <div class="container">
+            <div class="tienda-inner">
+                <div class="tienda-visual" aria-hidden="true">
+                    <div class="tienda-icon">🛒</div>
+                    <h3 data-i18n="tienda.card.title">Nuestra tienda en MercadoLibre</h3>
+                    <p data-i18n="tienda.card.desc">Comprá de forma segura con todos los beneficios de la plataforma.
+                    </p>
+                </div>
+                <div class="tienda-content">
+                    <span class="section-label" data-i18n="tienda.label">Tienda online</span>
+                    <h2 class="section-title" id="tienda-title" data-i18n="tienda.title">Encontranos en MercadoLibre
+                    </h2>
+                    <p class="section-subtitle" data-i18n="tienda.subtitle">Visitá nuestra tienda para ver los productos
+                        disponibles, hacer tu pedido y pagar de forma segura.</p>
+                    <div class="tienda-perks">
+                        <div class="tienda-perk">
+                            <div class="tienda-perk-icon">🛡️</div>
+                            <div>
+                                <h4 data-i18n="tienda.perk1.title">Compra protegida</h4>
+                                <p data-i18n="tienda.perk1.desc">Comprá con la seguridad y garantías de MercadoLibre.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="tienda-perk">
+                            <div class="tienda-perk-icon">💳</div>
+                            <div>
+                                <h4 data-i18n="tienda.perk2.title">Múltiples medios de pago</h4>
+                                <p data-i18n="tienda.perk2.desc">Tarjeta, transferencia, MercadoPago y más.</p>
+                            </div>
+                        </div>
+                        <div class="tienda-perk">
+                            <div class="tienda-perk-icon">🚚</div>
+                            <div>
+                                <h4 data-i18n="tienda.perk3.title">Envíos a todo el país</h4>
+                                <p data-i18n="tienda.perk3.desc">Despachamos con MercadoEnvíos.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="https://www.mercadolibre.com.ar" target="_blank" rel="noopener" class="btn btn-primary"
+                        id="btn-tienda">
+                        🛒 <span data-i18n="tienda.cta">Ir a la tienda</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== CLIENTES ===== -->
+    <section id="clientes" class="section" aria-labelledby="clientes-title">
+        <div class="container">
+            <div class="clientes-inner">
+                <span class="section-label" data-i18n="cli.label">Clientes</span>
+                <h2 class="section-title" id="clientes-title" data-i18n="cli.title">Algunos de nuestros clientes</h2>
+                <div class="clientes-coming" aria-live="polite">
+                    <div class="clientes-coming-icon" aria-hidden="true">🏆</div>
+                    <p data-i18n="cli.coming">Próximamente vas a encontrar aquí los logos y testimonios de quienes ya
+                        confiaron en nosotros.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== CONTACTO ===== -->
+    <section id="contacto" class="section" aria-labelledby="contacto-title">
+        <div class="container">
+            <div class="contacto-inner">
+                <div class="contacto-info">
+                    <span class="section-label" data-i18n="con.label">Contacto</span>
+                    <h2 class="section-title" id="contacto-title" data-i18n="con.title">¿Tenés un proyecto en mente?
+                    </h2>
+                    <p class="section-subtitle" data-i18n="con.subtitle">
+                        Escribinos y te ayudamos a darle forma. Estamos para responder cualquier duda sobre materiales,
+                        tiempos y precios.
+                    </p>
+                </div>
+                <div class="contacto-card">
+                    <div class="contacto-item">
+                        <div class="contacto-item-icon">
+                            <img src="https://img.magnific.com/vector-gratis/icono-redes-sociales-vector-instagram-7-junio-2021-bangkok-tailandia_53876-136728.jpg?semt=ais_test_b&w=740&q=80"
+                                alt="Instagram Logo" style="width: 34px; height: 34px; object-fit: contain;">
+                        </div>
+                        <div class="contacto-item-text">
+                            <h4>Instagram</h4>
+                            <a href="https://www.instagram.com/lamaquineria.3d" target="_blank"
+                                rel="noopener">@lamaquineria.3d</a>
+                        </div>
+                    </div>
+                    <div class="contacto-item">
+                        <div class="contacto-item-icon">
+                            <img src="https://www.pngfind.com/pngs/m/424-4241106_mercadolibre-logo-de-mercado-libre-hd-png-download.png"
+                                alt="MercadoLibre Logo" style="width: 34px; height: 34px; object-fit: contain;">
+                        </div>
+                        <div class="contacto-item-text">
+                            <h4>MercadoLibre</h4>
+                            <a href="https://www.mercadolibre.com.ar" target="_blank" rel="noopener"
+                                data-i18n="con.ml_link">Visitar tienda oficial</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer role="contentinfo">
+        <div class="footer-inner">
+            <div class="footer-logo">
+                <img src="logo.png" alt="La Maquinería 3D">
+            </div>
+            <nav class="footer-links" aria-label="Links del footer">
+                <a href="#sobre-nosotros" data-i18n="nav.sobre">Sobre nosotros</a>
+                <a href="#materiales" data-i18n="nav.mat">Materiales</a>
+                <a href="#cotizador" data-i18n="nav.cot">Cotizador</a>
+                <a href="#tienda" data-i18n="nav.tienda">Tienda</a>
+                <a href="#clientes" data-i18n="nav.cli">Clientes</a>
+                <a href="#contacto" data-i18n="nav.con">Contacto</a>
+            </nav>
+            <div class="footer-bottom">
+                <p>© <span id="year"></span> La Maquinería 3D. <span data-i18n="footer.rights">Todos los derechos
+                        reservados.</span></p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        /* ===== NAV ===== */
+        const navbar = document.getElementById('navbar');
+        const navToggle = document.getElementById('nav-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        window.addEventListener('scroll', () => {
+            navbar.classList.toggle('scrolled', window.scrollY > 20);
+        }, { passive: true });
+
+        navToggle.addEventListener('click', () => {
+            const open = mobileMenu.classList.toggle('open');
+            navToggle.classList.toggle('open', open);
+            navToggle.setAttribute('aria-expanded', open);
+            document.body.style.overflow = open ? 'hidden' : '';
+        });
+
+        function closeMobileMenu() {
+            mobileMenu.classList.remove('open');
+            navToggle.classList.remove('open');
+            navToggle.setAttribute('aria-expanded', 'false');
+            document.body.style.overflow = '';
+        }
+        window.addEventListener('resize', () => { if (window.innerWidth > 768) closeMobileMenu(); });
+
+        /* ===== SCROLL ANIMATIONS ===== */
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((e, i) => {
+                if (e.isIntersecting) {
+                    setTimeout(() => e.target.classList.add('visible'), i * 100);
+                    observer.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.15 });
+        document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+        /* ===== YEAR ===== */
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
 </body>
+
 </html>
