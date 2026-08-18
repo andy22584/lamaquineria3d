@@ -1,6 +1,6 @@
 {
-  "aviso": true,
+  "aviso": false,
   "tipo_aviso": "vacaciones",
-  "titulo": "La Maquinería 3D está descansando.",
-  "mensaje": "Estaremos de vacaciones entre el 25 de Agosto y el 26 de Agosto. Continuaremos tomando pedidos a nuestro regreso!"
+  "titulo": "",
+  "mensaje": ""
 }
