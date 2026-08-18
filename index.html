@@ -30,12 +30,20 @@
             --gray-700: #3A3A52;
 
             --font: 'Inter', sans-serif;
+            --radius-sm: 8px;
             --radius: 12px;
             --radius-lg: 20px;
+            --radius-xl: 28px;
+            --shadow-xs: 0 1px 3px rgba(15, 26, 68, .06);
             --shadow-sm: 0 2px 8px rgba(26, 43, 109, .08);
             --shadow-md: 0 8px 32px rgba(26, 43, 109, .14);
             --shadow-lg: 0 20px 60px rgba(26, 43, 109, .20);
+            --shadow-glow: 0 12px 36px rgba(224, 0, 106, .30);
+            --glass-bg: rgba(255, 255, 255, .06);
+            --glass-bg-hover: rgba(255, 255, 255, .09);
+            --glass-border: rgba(255, 255, 255, .14);
             --transition: .3s cubic-bezier(.4, 0, .2, 1);
+            --spring: .45s cubic-bezier(.16, 1, .3, 1);
         }
 
         /* =====================
@@ -60,6 +68,8 @@
             background: var(--white);
             overflow-x: hidden;
             line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
         }
 
         img {
@@ -76,6 +86,29 @@
             list-style: none;
         }
 
+        ::selection {
+            background: var(--magenta);
+            color: var(--white);
+        }
+
+        :focus-visible {
+            outline: 2px solid var(--magenta-light);
+            outline-offset: 3px;
+            border-radius: 4px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: .001ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: .001ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
         /* =====================
            UTILITY
         ===================== */
@@ -87,24 +120,35 @@
         }
 
         .section {
-            padding: 90px 0;
+            padding: 96px 0;
         }
 
         .section-label {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
             font-size: .75rem;
             font-weight: 700;
-            letter-spacing: .12em;
+            letter-spacing: .14em;
             text-transform: uppercase;
             color: var(--magenta);
-            margin-bottom: 12px;
+            margin-bottom: 14px;
+        }
+
+        .section-label::before {
+            content: '';
+            width: 18px;
+            height: 2px;
+            border-radius: 2px;
+            background: var(--magenta);
         }
 
         .section-title {
-            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-size: clamp(1.8rem, 4vw, 2.9rem);
             font-weight: 800;
+            letter-spacing: -.02em;
             color: var(--navy-dark);
-            line-height: 1.2;
+            line-height: 1.18;
             margin-bottom: 18px;
         }
 
@@ -125,29 +169,37 @@
             font-size: .95rem;
             font-weight: 600;
             cursor: pointer;
-            transition: var(--transition);
+            transition: transform var(--spring), box-shadow var(--transition), background var(--transition), border-color var(--transition), color var(--transition);
             border: 2px solid transparent;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn:active {
+            transform: scale(.96);
         }
 
         .btn-primary {
-            background: var(--magenta);
+            background: linear-gradient(135deg, var(--magenta) 0%, var(--magenta-dark) 100%);
             color: var(--white);
+            box-shadow: 0 4px 16px rgba(224, 0, 106, .25);
         }
 
         .btn-primary:hover {
-            background: var(--magenta-light);
+            background: linear-gradient(135deg, var(--magenta-light) 0%, var(--magenta) 100%);
             transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(224, 0, 106, .35);
+            box-shadow: var(--shadow-glow);
         }
 
         .btn-outline {
-            background: transparent;
+            background: rgba(255, 255, 255, .04);
             color: rgba(255, 255, 255, .85);
             border-color: rgba(255, 255, 255, .3);
+            backdrop-filter: blur(6px);
         }
 
         .btn-outline:hover {
-            background: rgba(255, 255, 255, .1);
+            background: rgba(255, 255, 255, .12);
+            border-color: rgba(255, 255, 255, .5);
             color: var(--white);
             transform: translateY(-2px);
         }
@@ -161,15 +213,16 @@
             left: 0;
             right: 0;
             z-index: 1000;
-            background: rgba(255, 255, 255, 0.92);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            background: rgba(255, 255, 255, 0.78);
+            backdrop-filter: blur(20px) saturate(1.4);
+            -webkit-backdrop-filter: blur(20px) saturate(1.4);
             border-bottom: 1px solid transparent;
             transition: var(--transition);
             padding: 0 24px;
         }
 
         #navbar.scrolled {
+            background: rgba(255, 255, 255, 0.92);
             border-bottom-color: var(--gray-100);
             box-shadow: var(--shadow-sm);
         }
@@ -181,6 +234,14 @@
             align-items: center;
             justify-content: space-between;
             height: 68px;
+        }
+
+        .nav-logo {
+            transition: transform var(--spring);
+        }
+
+        .nav-logo:hover {
+            transform: scale(1.04);
         }
 
         .nav-logo img {
@@ -195,6 +256,7 @@
         }
 
         .nav-links a {
+            position: relative;
             padding: 8px 14px;
             border-radius: 8px;
             font-size: .9rem;
@@ -213,19 +275,23 @@
             align-items: center;
             gap: 6px;
             padding: 9px 20px;
-            background: var(--magenta);
+            background: linear-gradient(135deg, var(--magenta) 0%, var(--magenta-dark) 100%);
             color: var(--white) !important;
             border-radius: 8px;
             font-size: .9rem;
             font-weight: 600;
-            transition: var(--transition);
+            transition: transform var(--spring), box-shadow var(--transition), background var(--transition);
             margin-left: 8px;
         }
 
         .nav-cta:hover {
-            background: var(--magenta-light) !important;
+            background: linear-gradient(135deg, var(--magenta-light) 0%, var(--magenta) 100%) !important;
             transform: translateY(-1px);
             box-shadow: 0 4px 16px rgba(224, 0, 106, .30);
+        }
+
+        .nav-cta:active {
+            transform: scale(.96);
         }
 
         .lang-toggle {
@@ -320,6 +386,7 @@
         .mobile-menu a:hover {
             background: var(--gray-100);
             color: var(--magenta);
+            transform: scale(1.03);
         }
 
         .mobile-menu .nav-cta {
@@ -346,11 +413,12 @@
             position: absolute;
             top: -120px;
             right: -80px;
-            width: 500px;
-            height: 500px;
-            background: radial-gradient(circle, rgba(224, 0, 106, .30) 0%, transparent 70%);
+            width: 560px;
+            height: 560px;
+            background: radial-gradient(circle, rgba(224, 0, 106, .32) 0%, transparent 70%);
             border-radius: 50%;
             pointer-events: none;
+            animation: heroDrift 16s ease-in-out infinite;
         }
 
         #hero::after {
@@ -358,11 +426,24 @@
             position: absolute;
             bottom: -100px;
             left: -60px;
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(37, 59, 160, .40) 0%, transparent 70%);
+            width: 440px;
+            height: 440px;
+            background: radial-gradient(circle, rgba(37, 59, 160, .45) 0%, transparent 70%);
             border-radius: 50%;
             pointer-events: none;
+            animation: heroDrift 20s ease-in-out infinite reverse;
+        }
+
+        @keyframes heroDrift {
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            50% {
+                transform: translate(-24px, 26px) scale(1.08);
+            }
         }
 
         .hero-grid {
@@ -386,19 +467,23 @@
         }
 
         .hero-title {
-            font-size: clamp(2.4rem, 5.5vw, 3.8rem);
+            font-size: clamp(2.5rem, 5.8vw, 4.1rem);
             font-weight: 900;
+            letter-spacing: -.02em;
             color: var(--white);
-            line-height: 1.1;
+            line-height: 1.08;
             margin-bottom: 20px;
         }
 
         .hero-title .accent {
-            color: var(--magenta-light);
+            background: linear-gradient(100deg, var(--magenta-light) 20%, #FF7BB8 80%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
 
         .hero-desc {
-            font-size: 1.1rem;
+            font-size: 1.12rem;
             color: rgba(255, 255, 255, .72);
             line-height: 1.75;
             margin-bottom: 36px;
@@ -481,9 +566,11 @@
 
         .hero-chip {
             position: absolute;
-            background: rgba(255, 255, 255, .10);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, .15);
+            background: rgba(255, 255, 255, .12);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, .18);
+            box-shadow: 0 8px 24px rgba(15, 26, 68, .25);
             border-radius: 100px;
             padding: 8px 16px;
             font-size: .78rem;
@@ -555,7 +642,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: var(--shadow-lg);
+            box-shadow: var(--shadow-lg), 0 0 80px rgba(224, 0, 106, .12);
             position: relative;
             padding: 24px;
         }
@@ -596,17 +683,18 @@
         }
 
         .sobre-feature {
-            background: rgba(255, 255, 255, .05);
+            background: var(--glass-bg);
             border-radius: var(--radius);
             padding: 18px;
             border: 1px solid rgba(255, 255, 255, .08);
-            transition: var(--transition);
+            transition: transform var(--spring), border-color var(--transition), background var(--transition), box-shadow var(--transition);
         }
 
         .sobre-feature:hover {
+            background: var(--glass-bg-hover);
             border-color: rgba(224, 0, 106, .4);
-            box-shadow: var(--shadow-sm);
-            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-3px);
         }
 
         .sobre-feature-icon {
@@ -651,11 +739,11 @@
         }
 
         .material-card {
-            background: rgba(255, 255, 255, .04);
+            background: linear-gradient(165deg, rgba(255, 255, 255, .05) 0%, rgba(255, 255, 255, .02) 100%);
             border-radius: var(--radius-lg);
             padding: 28px;
             border: 1px solid rgba(255, 255, 255, .08);
-            transition: var(--transition);
+            transition: transform var(--spring), border-color var(--transition), box-shadow var(--transition), background var(--transition);
             position: relative;
             overflow: hidden;
         }
@@ -666,11 +754,11 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 4px;
-            background: var(--card-accent, var(--magenta));
+            height: 3px;
+            background: linear-gradient(90deg, transparent 0%, var(--card-accent, var(--magenta)) 50%, transparent 100%);
             transform: scaleX(0);
-            transform-origin: left;
-            transition: var(--transition);
+            transform-origin: center;
+            transition: transform .45s cubic-bezier(.16, 1, .3, 1);
         }
 
         .material-card:hover::before {
@@ -678,9 +766,10 @@
         }
 
         .material-card:hover {
-            border-color: rgba(255, 255, 255, .15);
-            box-shadow: var(--shadow-md);
-            transform: translateY(-4px);
+            background: linear-gradient(165deg, rgba(255, 255, 255, .08) 0%, rgba(255, 255, 255, .03) 100%);
+            border-color: rgba(255, 255, 255, .16);
+            box-shadow: var(--shadow-md), 0 0 0 1px rgba(255, 255, 255, .04) inset;
+            transform: translateY(-6px);
         }
 
         .material-badge {
@@ -782,8 +871,8 @@
         .cotizador-icon-wrap {
             width: 90px;
             height: 90px;
-            background: rgba(255, 255, 255, .08);
-            border: 1px solid rgba(255, 255, 255, .15);
+            background: linear-gradient(150deg, rgba(255, 255, 255, .12) 0%, rgba(255, 255, 255, .04) 100%);
+            border: 1px solid rgba(255, 255, 255, .18);
             border-radius: 24px;
             display: flex;
             align-items: center;
@@ -791,6 +880,7 @@
             font-size: 2.4rem;
             margin-bottom: 28px;
             backdrop-filter: blur(8px);
+            box-shadow: 0 10px 30px rgba(224, 0, 106, .18);
         }
 
         .cotizador-inner .section-title {
@@ -819,25 +909,12 @@
             font-weight: 600;
             color: var(--white);
             backdrop-filter: blur(4px);
+            transition: var(--transition);
         }
 
-        .cotizador-coming {
-            background: rgba(255, 255, 255, .08);
-            border: 1px solid rgba(255, 255, 255, .15);
-            border-radius: var(--radius-lg);
-            padding: 32px 48px;
-            max-width: 540px;
-            backdrop-filter: blur(8px);
-        }
-
-        .cotizador-coming p {
-            font-size: 1rem;
-            color: rgba(255, 255, 255, .75);
-            line-height: 1.7;
-        }
-
-        .cotizador-coming strong {
-            color: var(--white);
+        .format-chip:hover {
+            background: rgba(255, 255, 255, .18);
+            border-color: rgba(255, 255, 255, .32);
         }
 
         /* =====================
@@ -847,16 +924,25 @@
             width: 100%;
             max-width: 640px;
             margin: 0 auto 28px;
-            background: rgba(255, 255, 255, .06);
-            border: 1px solid rgba(255, 255, 255, .15);
+            background: linear-gradient(165deg, rgba(255, 255, 255, .08) 0%, rgba(255, 255, 255, .03) 100%);
+            border: 1px solid var(--glass-border);
             border-radius: var(--radius-lg);
             padding: 24px;
-            backdrop-filter: blur(8px);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
             box-shadow: var(--shadow-lg);
             text-align: left;
+            display: flex;
+            flex-direction: column;
         }
 
         .viewer-dropzone {
+            flex: 1;
+            min-height: 260px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             border: 2px dashed rgba(255, 255, 255, .25);
             border-radius: var(--radius);
             padding: 48px 24px;
@@ -868,7 +954,8 @@
         .viewer-dropzone:hover,
         .viewer-dropzone.dragover {
             border-color: var(--magenta-light);
-            background: rgba(224, 0, 106, .08);
+            background: rgba(224, 0, 106, .1);
+            box-shadow: 0 0 0 4px rgba(224, 0, 106, .08) inset;
         }
 
         .viewer-dropzone-icon {
@@ -898,6 +985,8 @@
         .viewer-canvas-wrap {
             position: relative;
             width: 100%;
+            flex: 1;
+            min-height: 260px;
             aspect-ratio: 4 / 3;
             border-radius: var(--radius);
             overflow: hidden;
@@ -967,6 +1056,11 @@
         .viewer-reset-btn:hover {
             background: var(--magenta);
             border-color: var(--magenta);
+            transform: scale(1.08);
+        }
+
+        .viewer-reset-btn:active {
+            transform: scale(.94);
         }
 
         .viewer-loading {
@@ -1043,6 +1137,576 @@
         }
 
         /* =====================
+           FORMULARIO DE COTIZACIÓN
+        ===================== */
+        .cotizador-workspace {
+            display: grid;
+            grid-template-columns: 1.15fr .85fr;
+            gap: 24px;
+            align-items: stretch;
+            width: 100%;
+            text-align: left;
+        }
+
+        .cotizador-workspace .cotizador-viewer-card {
+            margin: 0;
+            max-width: none;
+        }
+
+        .cotizador-form-card {
+            width: 100%;
+            background: linear-gradient(165deg, rgba(255, 255, 255, .08) 0%, rgba(255, 255, 255, .03) 100%);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .cotizador-form-top {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cotizador-form-bottom {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cotizador-form-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--white);
+            margin-bottom: 4px;
+        }
+
+        .cotizador-form-subtitle {
+            font-size: .82rem;
+            color: rgba(255, 255, 255, .55);
+            margin-bottom: 20px;
+        }
+
+        .cotizador-form-fields {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            transition: var(--transition);
+        }
+
+        .cotizador-form-fields.disabled {
+            opacity: .4;
+            pointer-events: none;
+        }
+
+        .form-field label {
+            display: block;
+            font-size: .8rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, .8);
+            margin-bottom: 6px;
+        }
+
+        .form-field select,
+        .form-field input[type="number"],
+        .form-field input[type="text"],
+        .form-field input[type="tel"],
+        .form-field input[type="email"],
+        .form-field textarea {
+            width: 100%;
+            background: rgba(255, 255, 255, .07);
+            border: 1px solid rgba(255, 255, 255, .18);
+            color: var(--white);
+            border-radius: var(--radius-sm);
+            padding: 10px 12px;
+            font-family: var(--font);
+            font-size: .9rem;
+            transition: var(--transition);
+        }
+
+        .form-field textarea {
+            resize: vertical;
+            min-height: 70px;
+        }
+
+        .form-field select:focus,
+        .form-field input[type="number"]:focus,
+        .form-field input[type="text"]:focus,
+        .form-field input[type="tel"]:focus,
+        .form-field input[type="email"]:focus,
+        .form-field textarea:focus {
+            outline: none;
+            border-color: var(--magenta-light);
+            background: rgba(255, 255, 255, .1);
+            box-shadow: 0 0 0 3px rgba(255, 46, 142, .18);
+        }
+
+        .form-field select option {
+            background: var(--navy-dark);
+            color: var(--white);
+        }
+
+        .form-field-error {
+            display: none;
+            font-size: .74rem;
+            color: #FFD7E8;
+            margin-top: 6px;
+            line-height: 1.4;
+        }
+
+        .form-field-error.visible {
+            display: block;
+        }
+
+        .form-field.invalid select,
+        .form-field.invalid input,
+        .form-field.invalid textarea,
+        .form-field.invalid .orden-archivo-row {
+            border-color: #FFD7E8;
+        }
+
+        .form-size-detected {
+            font-size: .78rem;
+            color: rgba(255, 255, 255, .5);
+            margin-bottom: 8px;
+        }
+
+        .form-size-input-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-size-input-wrap input {
+            flex: 1;
+        }
+
+        .form-size-unit {
+            font-size: .78rem;
+            color: rgba(255, 255, 255, .55);
+            white-space: nowrap;
+        }
+
+        .form-hint {
+            font-size: .74rem;
+            color: rgba(255, 255, 255, .45);
+            margin-top: 6px;
+        }
+
+        .cotizador-calc-btn {
+            width: 100%;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .cotizador-calc-btn:disabled {
+            opacity: .4;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        #cotizador-form-hint {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .cotizador-result-price {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius);
+            padding: 14px 16px;
+        }
+
+        .cotizador-result-price span {
+            font-size: .82rem;
+            color: rgba(255, 255, 255, .7);
+        }
+
+        .cotizador-result-price strong {
+            font-size: 1.3rem;
+            font-weight: 800;
+            letter-spacing: -.02em;
+            color: var(--magenta-light);
+        }
+
+        .cotizador-result-disclaimer {
+            margin-top: 12px;
+            font-size: .72rem;
+            line-height: 1.5;
+            color: rgba(255, 255, 255, .45);
+        }
+
+        @media (max-width: 900px) {
+            .cotizador-workspace {
+                grid-template-columns: 1fr;
+            }
+
+            .cotizador-form-card {
+                justify-content: flex-start;
+            }
+        }
+
+        /* =====================
+           POPUP DE PRESUPUESTO
+        ===================== */
+        .cotizador-modal-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(13, 13, 13, .68);
+            backdrop-filter: blur(6px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .cotizador-modal-backdrop.active {
+            display: flex;
+        }
+
+        .cotizador-modal {
+            position: relative;
+            width: 100%;
+            max-width: 380px;
+            background: linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 100%);
+            border: 1px solid rgba(255, 255, 255, .15);
+            border-radius: var(--radius-lg);
+            padding: 32px 28px 28px;
+            box-shadow: var(--shadow-lg), 0 0 0 1px rgba(255, 255, 255, .04) inset;
+            animation: cotizador-modal-in .4s cubic-bezier(.16, 1, .3, 1);
+        }
+
+        @keyframes cotizador-modal-in {
+            from {
+                opacity: 0;
+                transform: translateY(16px) scale(.96);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .cotizador-modal-close {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            background: rgba(255, 255, 255, .08);
+            border: 1px solid rgba(255, 255, 255, .15);
+            color: var(--white);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .cotizador-modal-close:hover {
+            background: var(--magenta);
+            border-color: var(--magenta);
+            transform: rotate(90deg);
+        }
+
+        .cotizador-modal-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--white);
+            margin-bottom: 18px;
+        }
+
+        .cotizador-modal-loading {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            padding: 26px 0;
+            color: rgba(255, 255, 255, .75);
+            font-size: .88rem;
+        }
+
+        .cotizador-modal-loading.active {
+            display: flex;
+        }
+
+        .cotizador-modal-content {
+            display: none;
+        }
+
+        .cotizador-modal-content.active {
+            display: block;
+        }
+
+        .cotizador-modal-error {
+            display: none;
+            color: #FFD7E8;
+            font-size: .86rem;
+            line-height: 1.6;
+            text-align: center;
+            padding: 6px 0 2px;
+        }
+
+        .cotizador-modal-error.visible {
+            display: block;
+        }
+
+        .cotizador-orden-btn {
+            width: 100%;
+            justify-content: center;
+            margin-top: 18px;
+        }
+
+        /* =====================
+           ORDEN DE TRABAJO
+        ===================== */
+        .orden-modal-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(13, 13, 13, .65);
+            backdrop-filter: blur(4px);
+            z-index: 2050;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .orden-modal-backdrop.active {
+            display: flex;
+        }
+
+        .orden-modal {
+            position: relative;
+            width: 100%;
+            max-width: 440px;
+            max-height: calc(100vh - 48px);
+            overflow-y: auto;
+            background: linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 100%);
+            border: 1px solid rgba(255, 255, 255, .15);
+            border-radius: var(--radius-lg);
+            padding: 32px 28px 28px;
+            box-shadow: var(--shadow-lg);
+            animation: cotizador-modal-in .25s ease;
+            /* Scrollbar acorde al tema oscuro (Firefox) */
+            scrollbar-width: thin;
+            scrollbar-color: rgba(224, 0, 106, .5) transparent;
+        }
+
+        /* Scrollbar acorde al tema oscuro (Chrome/Edge/Safari) */
+        .orden-modal::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .orden-modal::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .orden-modal::-webkit-scrollbar-thumb {
+            background: rgba(224, 0, 106, .5);
+            border-radius: 8px;
+        }
+
+        .orden-modal::-webkit-scrollbar-thumb:hover {
+            background: var(--magenta);
+        }
+
+        .orden-modal-subtitle {
+            font-size: .82rem;
+            color: rgba(255, 255, 255, .55);
+            margin-top: -12px;
+            margin-bottom: 20px;
+        }
+
+        .orden-modal-form.hidden {
+            display: none;
+        }
+
+        .orden-modal-form .form-field {
+            margin-bottom: 16px;
+        }
+
+        .orden-modal-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .orden-modal-row .form-field {
+            margin-bottom: 0;
+        }
+
+        .orden-archivo-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            background: rgba(255, 255, 255, .07);
+            border: 1px solid rgba(255, 255, 255, .18);
+            border-radius: var(--radius-sm);
+            padding: 8px 8px 8px 12px;
+            transition: var(--transition);
+        }
+
+        .orden-archivo-row:hover {
+            background: rgba(255, 255, 255, .1);
+            border-color: rgba(255, 255, 255, .28);
+        }
+
+        .orden-archivo-nombre {
+            font-size: .82rem;
+            color: rgba(255, 255, 255, .8);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .orden-archivo-btn {
+            flex-shrink: 0;
+            padding: 8px 14px;
+            font-size: .78rem;
+        }
+
+        .orden-submit-btn {
+            width: 100%;
+            justify-content: center;
+            margin-top: 8px;
+        }
+
+        .orden-modal-error {
+            display: none;
+            color: #FFD7E8;
+            font-size: .86rem;
+            line-height: 1.6;
+            text-align: center;
+            padding: 10px 0 2px;
+        }
+
+        .orden-modal-error.visible {
+            display: block;
+        }
+
+        .orden-modal-loading {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            padding: 26px 0;
+            color: rgba(255, 255, 255, .75);
+            font-size: .88rem;
+        }
+
+        .orden-modal-loading.active {
+            display: flex;
+        }
+
+        .orden-modal-success {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 8px;
+            padding: 10px 0;
+        }
+
+        .orden-modal-success.active {
+            display: flex;
+        }
+
+        .orden-modal-success-icon {
+            font-size: 2.6rem;
+            animation: successPop .5s cubic-bezier(.16, 1, .3, 1);
+        }
+
+        @keyframes successPop {
+            from {
+                opacity: 0;
+                transform: scale(.5);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .orden-modal-success-msg {
+            font-size: .95rem;
+            color: rgba(255, 255, 255, .8);
+            line-height: 1.5;
+        }
+
+        .orden-modal-success button {
+            margin-top: 10px;
+        }
+
+        /* =====================
+           AVISO DEL SITIO (vacaciones / mantenimiento)
+        ===================== */
+        .aviso-modal-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(13, 13, 13, .72);
+            backdrop-filter: blur(4px);
+            z-index: 2100;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .aviso-modal-backdrop.active {
+            display: flex;
+        }
+
+        .aviso-modal {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            background: linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 100%);
+            border: 1px solid rgba(255, 255, 255, .15);
+            border-radius: var(--radius-lg);
+            padding: 36px 30px 30px;
+            box-shadow: var(--shadow-lg);
+            text-align: center;
+            animation: cotizador-modal-in .25s ease;
+        }
+
+        .aviso-modal-icon {
+            font-size: 2.6rem;
+            margin-bottom: 14px;
+        }
+
+        .aviso-modal .cotizador-modal-title {
+            margin-bottom: 12px;
+        }
+
+        .aviso-modal-message {
+            font-size: .95rem;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, .8);
+        }
+
+        .aviso-modal-backdrop.no-cerrable .cotizador-modal-close {
+            display: none;
+        }
+
+        /* =====================
            TIENDA
         ===================== */
         #tienda {
@@ -1070,8 +1734,14 @@
             padding: 40px;
             text-align: center;
             border: 1px solid rgba(255, 255, 255, .1);
+            box-shadow: var(--shadow-md);
             position: relative;
             overflow: hidden;
+            transition: transform var(--spring);
+        }
+
+        .tienda-visual:hover {
+            transform: translateY(-4px);
         }
 
         .tienda-visual::before {
@@ -1136,6 +1806,13 @@
             align-items: center;
             justify-content: center;
             font-size: 1.1rem;
+            transition: var(--transition);
+        }
+
+        .tienda-perk:hover .tienda-perk-icon {
+            background: rgba(224, 0, 106, .18);
+            border-color: rgba(224, 0, 106, .35);
+            transform: translateY(-2px);
         }
 
         .tienda-perk h4 {
@@ -1171,7 +1848,13 @@
             background: rgba(255, 255, 255, .04);
             border-radius: var(--radius-lg);
             padding: 52px 40px;
-            border: 2px dashed rgba(255, 255, 255, .15);
+            border: 2px dashed rgba(255, 255, 255, .18);
+            transition: var(--transition);
+        }
+
+        .clientes-coming:hover {
+            border-color: rgba(224, 0, 106, .35);
+            background: rgba(255, 255, 255, .06);
         }
 
         .clientes-coming-icon {
@@ -1211,10 +1894,11 @@
         }
 
         .contacto-card {
-            background: rgba(255, 255, 255, .04);
+            background: linear-gradient(165deg, rgba(255, 255, 255, .06) 0%, rgba(255, 255, 255, .02) 100%);
             border-radius: var(--radius-lg);
             padding: 40px;
             border: 1px solid rgba(255, 255, 255, .08);
+            box-shadow: var(--shadow-md);
             display: flex;
             flex-direction: column;
             gap: 24px;
@@ -1224,6 +1908,11 @@
             display: flex;
             align-items: center;
             gap: 16px;
+            transition: transform var(--spring);
+        }
+
+        .contacto-item:hover {
+            transform: translateX(4px);
         }
 
         .contacto-item-icon {
@@ -1296,6 +1985,8 @@
 
         .footer-links a:hover {
             color: var(--magenta-light);
+            text-decoration: underline;
+            text-underline-offset: 4px;
         }
 
         .footer-bottom {
@@ -1311,7 +2002,7 @@
         .fade-up {
             opacity: 0;
             transform: translateY(30px);
-            transition: opacity .6s ease, transform .6s ease;
+            transition: opacity .7s cubic-bezier(.16, 1, .3, 1), transform .7s cubic-bezier(.16, 1, .3, 1);
         }
 
         .fade-up.visible {
@@ -1386,13 +2077,19 @@
                 font-size: 2rem;
             }
 
-            .cotizador-coming {
-                padding: 24px;
-            }
-
             .clientes-coming,
             .contacto-card {
                 padding: 32px 20px;
+            }
+
+            .cotizador-modal {
+                padding: 28px 20px 22px;
+            }
+
+            .cotizador-result-price {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
             }
         }
     </style>
@@ -1404,7 +2101,7 @@
     <nav id="navbar" role="navigation" aria-label="Navegación principal">
         <div class="nav-inner">
             <a href="#" class="nav-logo" aria-label="La Maquinería 3D — Inicio">
-                <img src="logo.png" alt="La Maquinería 3D">
+                <img src="images/logo.png" alt="La Maquinería 3D">
             </a>
             <div class="nav-links" id="nav-links">
                 <a href="#sobre-nosotros" data-i18n="nav.sobre">Sobre nosotros</a>
@@ -1460,7 +2157,7 @@
                 </div>
                 <div class="hero-visual" aria-hidden="true">
                     <div class="hero-logo-wrap">
-                        <img src="logo.png" alt="La Maquinería 3D" class="hero-logo-img">
+                        <img src="images/logo.png" alt="La Maquinería 3D" class="hero-logo-img">
                     </div>
                 </div>
             </div>
@@ -1473,8 +2170,7 @@
             <div class="sobre-grid">
                 <div class="sobre-image-wrap" aria-hidden="true">
                     <div class="sobre-image-card">
-                        <img src="https://3dpartnershop.es/wp-content/uploads/2026/06/Impresora-3D-FDM-Snapmaker-U1-43843.png"
-                            alt="Impresión 3D">
+                        <img src="images/impresora-3d.png" alt="Impresión 3D">
                     </div>
                 </div>
                 <div>
@@ -1482,7 +2178,7 @@
                     <h2 class="section-title" id="sobre-title" data-i18n="sobre.title">Pasión por la impresión 3D, al
                         servicio de tus ideas</h2>
                     <p class="section-subtitle" data-i18n="sobre.p1">
-                        Somos un emprendimiento apasionado por la tecnología y la fabricación digital. Nacimos con la
+                        Somos un grupo apasionado por la tecnología y la fabricación digital. Nacimos con la
                         convicción de que cualquier persona o empresa debería poder acceder a impresión 3D de calidad,
                         sin complicaciones y a un precio justo.
                     </p>
@@ -1589,41 +2285,188 @@
                     <span class="format-chip">.3MF</span>
                 </div>
 
-                <div class="cotizador-viewer-card fade-up">
-                    <div class="viewer-dropzone" id="viewer-dropzone" role="button" tabindex="0"
-                        aria-label="Subir archivo STL o 3MF para previsualizar en 3D">
-                        <div class="viewer-dropzone-icon" aria-hidden="true">📁</div>
-                        <p><strong>Arrastrá tu archivo acá</strong><br>o hacé clic para seleccionarlo</p>
-                        <p class="viewer-hint">Formatos .STL y .3MF · Máximo 25MB</p>
-                        <input type="file" id="viewer-file-input" accept=".stl,.3mf">
+                <div class="cotizador-workspace">
+                    <div class="cotizador-viewer-card fade-up">
+                        <div class="viewer-dropzone" id="viewer-dropzone" role="button" tabindex="0"
+                            aria-label="Subir archivo STL o 3MF para previsualizar en 3D">
+                            <div class="viewer-dropzone-icon" aria-hidden="true">📁</div>
+                            <p><strong>Arrastrá tu archivo acá</strong><br>o hacé clic para seleccionarlo</p>
+                            <p class="viewer-hint">Formatos .STL y .3MF · Máximo 25MB</p>
+                            <input type="file" id="viewer-file-input" accept=".stl,.3mf">
+                        </div>
+
+                        <div class="viewer-canvas-wrap" id="viewer-canvas-wrap">
+                            <div class="viewer-toolbar">
+                                <span class="viewer-file-info" id="viewer-file-info"></span>
+                                <button type="button" class="viewer-reset-btn" id="viewer-reset-btn"
+                                    title="Quitar archivo" aria-label="Quitar archivo">✕</button>
+                            </div>
+                            <div class="viewer-loading" id="viewer-loading">
+                                <div class="viewer-spinner" aria-hidden="true"></div>
+                                <span>Cargando modelo…</span>
+                            </div>
+                            <span class="viewer-rotate-hint">🖱️ Arrastrá para rotar · Scroll para zoom</span>
+                        </div>
+
+                        <p class="viewer-error" id="viewer-error" role="alert"></p>
                     </div>
 
-                    <div class="viewer-canvas-wrap" id="viewer-canvas-wrap">
-                        <div class="viewer-toolbar">
-                            <span class="viewer-file-info" id="viewer-file-info"></span>
-                            <button type="button" class="viewer-reset-btn" id="viewer-reset-btn"
-                                title="Quitar archivo" aria-label="Quitar archivo">✕</button>
+                    <div class="cotizador-form-card fade-up">
+                        <div class="cotizador-form-top">
+                            <h3 class="cotizador-form-title">Calculá tu presupuesto</h3>
+                            <p class="cotizador-form-subtitle">Automático y aproximado, a partir de tu archivo.</p>
+
+                            <div class="cotizador-form-fields disabled" id="cotizador-form-fields">
+                                <div class="form-field">
+                                    <label for="cot-material">Material</label>
+                                    <select id="cot-material">
+                                        <option value="PLA">PLA</option>
+                                        <option value="PETG">PETG</option>
+                                        <option value="TPU">TPU</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-field">
+                                    <label for="cot-altura">Tamaño deseado</label>
+                                    <p class="form-size-detected" id="cot-size-detected">Subí un archivo para
+                                        detectar el tamaño</p>
+                                    <div class="form-size-input-wrap">
+                                        <input type="number" id="cot-altura" min="0.1" step="0.1"
+                                            placeholder="Alto original" inputmode="decimal">
+                                        <span class="form-size-unit">cm de alto</span>
+                                    </div>
+                                    <p class="form-hint">Dejalo vacío para usar el tamaño original del archivo.</p>
+                                </div>
+
+                                <div class="form-field">
+                                    <label for="cot-cantidad">Cantidad</label>
+                                    <input type="number" id="cot-cantidad" min="1" step="1" value="1"
+                                        inputmode="numeric">
+                                </div>
+                            </div>
                         </div>
-                        <div class="viewer-loading" id="viewer-loading">
-                            <div class="viewer-spinner" aria-hidden="true"></div>
-                            <span>Cargando modelo…</span>
+
+                        <div class="cotizador-form-bottom">
+                            <button type="button" class="btn btn-primary cotizador-calc-btn" id="cotizador-calc-btn"
+                                disabled>
+                                💰 <span>Calcular presupuesto</span>
+                            </button>
+                            <p class="form-hint" id="cotizador-form-hint">Subí un archivo STL o 3MF para poder
+                                calcular.</p>
                         </div>
-                        <span class="viewer-rotate-hint">🖱️ Arrastrá para rotar · Scroll para zoom</span>
                     </div>
-
-                    <p class="viewer-error" id="viewer-error" role="alert"></p>
-                </div>
-
-                <div class="cotizador-coming">
-                    <p data-i18n-html="cot.coming">
-                        Ya podés <strong>previsualizar tu pieza en 3D</strong> antes de consultarnos. El cálculo
-                        automático de precio según material, tiempo de impresión y uso de filamento está en
-                        desarrollo — ¡muy pronto disponible!
-                    </p>
                 </div>
             </div>
         </div>
     </section>
+
+    <!-- ===== AVISO DEL SITIO (vacaciones / mantenimiento) ===== -->
+    <div class="aviso-modal-backdrop" id="aviso-modal-backdrop">
+        <div class="aviso-modal" role="dialog" aria-modal="true" aria-labelledby="aviso-modal-title">
+            <button type="button" class="cotizador-modal-close" id="aviso-modal-close" title="Cerrar"
+                aria-label="Cerrar">✕</button>
+            <div class="aviso-modal-icon" id="aviso-modal-icon" aria-hidden="true">🏖️</div>
+            <h3 class="cotizador-modal-title" id="aviso-modal-title">Aviso</h3>
+            <p class="aviso-modal-message" id="aviso-modal-message"></p>
+        </div>
+    </div>
+
+    <!-- ===== POPUP DE PRESUPUESTO ===== -->
+    <div class="cotizador-modal-backdrop" id="cotizador-modal-backdrop">
+        <div class="cotizador-modal" role="dialog" aria-modal="true" aria-labelledby="cotizador-modal-title">
+            <button type="button" class="cotizador-modal-close" id="cotizador-modal-close" title="Cerrar"
+                aria-label="Cerrar">✕</button>
+
+            <div class="cotizador-modal-loading" id="cotizador-modal-loading">
+                <div class="viewer-spinner" aria-hidden="true"></div>
+                <span>Calculando presupuesto…</span>
+            </div>
+
+            <div class="cotizador-modal-content" id="cotizador-modal-content">
+                <h3 class="cotizador-modal-title" id="cotizador-modal-title">Tu presupuesto</h3>
+                <div class="cotizador-result-price">
+                    <span>Precio aproximado</span>
+                    <strong id="cot-res-precio">—</strong>
+                </div>
+                <p class="cotizador-result-disclaimer" id="cot-res-aviso"></p>
+
+                <button type="button" class="btn btn-outline cotizador-orden-btn" id="orden-trabajo-btn">
+                    📋 <span>Generar orden de trabajo</span>
+                </button>
+            </div>
+
+            <p class="cotizador-modal-error" id="cotizador-modal-error" role="alert"></p>
+        </div>
+    </div>
+
+    <!-- ===== ORDEN DE TRABAJO ===== -->
+    <div class="orden-modal-backdrop" id="orden-modal-backdrop">
+        <div class="orden-modal" role="dialog" aria-modal="true" aria-labelledby="orden-modal-title">
+            <button type="button" class="cotizador-modal-close" id="orden-modal-close" title="Cerrar"
+                aria-label="Cerrar">✕</button>
+
+            <div class="orden-modal-form" id="orden-modal-form-view">
+                <h3 class="cotizador-modal-title" id="orden-modal-title">Generar orden de trabajo</h3>
+                <p class="orden-modal-subtitle">Completá tus datos y te confirmamos el pedido.</p>
+
+                <div class="orden-modal-row">
+                    <div class="form-field">
+                        <label for="orden-nombre">Nombre y apellido</label>
+                        <input type="text" id="orden-nombre" maxlength="80" autocomplete="name">
+                        <p class="form-field-error" id="orden-nombre-error"></p>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="orden-telefono">Teléfono</label>
+                        <input type="tel" id="orden-telefono" placeholder="Ej: 11 1234-5678" maxlength="20"
+                            autocomplete="tel">
+                        <p class="form-field-error" id="orden-telefono-error"></p>
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <label for="orden-email">Email</label>
+                    <input type="email" id="orden-email" maxlength="120" autocomplete="email">
+                    <p class="form-field-error" id="orden-email-error"></p>
+                </div>
+
+                <div class="form-field">
+                    <label for="orden-notas">Notas (opcional)</label>
+                    <textarea id="orden-notas" maxlength="500" rows="3"
+                        placeholder="Color, detalles del pedido, etc."></textarea>
+                    <p class="form-field-error" id="orden-notas-error"></p>
+                </div>
+
+                <div class="form-field">
+                    <label for="orden-archivo-input">Archivo STL / 3MF</label>
+                    <div class="orden-archivo-row">
+                        <span class="orden-archivo-nombre" id="orden-archivo-nombre">—</span>
+                        <button type="button" class="btn btn-outline orden-archivo-btn"
+                            id="orden-archivo-btn">Cambiar</button>
+                    </div>
+                    <input type="file" id="orden-archivo-input" accept=".stl,.3mf" hidden>
+                    <p class="form-field-error" id="orden-archivo-error"></p>
+                </div>
+
+                <button type="button" class="btn btn-primary orden-submit-btn" id="orden-submit-btn">
+                    <span>Enviar orden</span>
+                </button>
+                <p class="orden-modal-error" id="orden-modal-error" role="alert"></p>
+            </div>
+
+            <div class="orden-modal-loading" id="orden-modal-loading">
+                <div class="viewer-spinner" aria-hidden="true"></div>
+                <span>Enviando orden…</span>
+            </div>
+
+            <div class="orden-modal-success" id="orden-modal-success">
+                <div class="orden-modal-success-icon" aria-hidden="true">✅</div>
+                <h3 class="cotizador-modal-title">¡Listo!</h3>
+                <p class="orden-modal-success-msg" id="orden-modal-success-msg"></p>
+                <button type="button" class="btn btn-primary" id="orden-success-close-btn">Cerrar</button>
+            </div>
+        </div>
+    </div>
 
     <!-- ===== TIENDA ===== -->
     <section id="tienda" class="section" aria-labelledby="tienda-title">
@@ -1631,13 +2474,13 @@
             <div class="tienda-inner">
                 <div class="tienda-visual" aria-hidden="true">
                     <div class="tienda-icon">🛒</div>
-                    <h3 data-i18n="tienda.card.title">Nuestra tienda en MercadoLibre</h3>
+                    <h3 data-i18n="tienda.card.title">Nuestra tienda en Mercado Libre</h3>
                     <p data-i18n="tienda.card.desc">Comprá de forma segura con todos los beneficios de la plataforma.
                     </p>
                 </div>
                 <div class="tienda-content">
-                    <span class="section-label" data-i18n="tienda.label">Tienda online</span>
-                    <h2 class="section-title" id="tienda-title" data-i18n="tienda.title">Encontranos en MercadoLibre
+                    <span class="section-label" data-i18n="tienda.label">Tienda Online</span>
+                    <h2 class="section-title" id="tienda-title" data-i18n="tienda.title">Encontranos en Mercado Libre
                     </h2>
                     <p class="section-subtitle" data-i18n="tienda.subtitle">Visitá nuestra tienda para ver los productos
                         disponibles, hacer tu pedido y pagar de forma segura.</p>
@@ -1646,7 +2489,7 @@
                             <div class="tienda-perk-icon">🛡️</div>
                             <div>
                                 <h4 data-i18n="tienda.perk1.title">Compra protegida</h4>
-                                <p data-i18n="tienda.perk1.desc">Comprá con la seguridad y garantías de MercadoLibre.
+                                <p data-i18n="tienda.perk1.desc">Comprá con la seguridad y garantías de Mercado Libre.
                                 </p>
                             </div>
                         </div>
@@ -1705,8 +2548,8 @@
                 <div class="contacto-card">
                     <div class="contacto-item">
                         <div class="contacto-item-icon">
-                            <img src="https://img.magnific.com/vector-gratis/icono-redes-sociales-vector-instagram-7-junio-2021-bangkok-tailandia_53876-136728.jpg?semt=ais_test_b&w=740&q=80"
-                                alt="Instagram Logo" style="width: 34px; height: 34px; object-fit: contain;">
+                            <img src="images/instagram-icon.jpg" alt="Instagram Logo"
+                                style="width: 34px; height: 34px; object-fit: contain;">
                         </div>
                         <div class="contacto-item-text">
                             <h4>Instagram</h4>
@@ -1716,11 +2559,11 @@
                     </div>
                     <div class="contacto-item">
                         <div class="contacto-item-icon">
-                            <img src="https://www.pngfind.com/pngs/m/424-4241106_mercadolibre-logo-de-mercado-libre-hd-png-download.png"
-                                alt="MercadoLibre Logo" style="width: 34px; height: 34px; object-fit: contain;">
+                            <img src="images/mercadolibre-icon.jpg" alt="MercadoLibre Logo"
+                                style="width: 34px; height: 34px; object-fit: contain;">
                         </div>
                         <div class="contacto-item-text">
-                            <h4>MercadoLibre</h4>
+                            <h4>Mercado Libre</h4>
                             <a href="https://www.mercadolibre.com.ar" target="_blank" rel="noopener"
                                 data-i18n="con.ml_link">Visitar tienda oficial</a>
                         </div>
@@ -1734,7 +2577,7 @@
     <footer role="contentinfo">
         <div class="footer-inner">
             <div class="footer-logo">
-                <img src="logo.png" alt="La Maquinería 3D">
+                <img src="images/logo.png" alt="La Maquinería 3D">
             </div>
             <nav class="footer-links" aria-label="Links del footer">
                 <a href="#sobre-nosotros" data-i18n="nav.sobre">Sobre nosotros</a>
@@ -1791,12 +2634,117 @@
         document.getElementById('year').textContent = new Date().getFullYear();
     </script>
 
+    <!-- ===== AVISO DEL SITIO (vacaciones / mantenimiento) =====
+         Lee un archivo estático (aviso.json, servido por GitHub Pages junto
+         con el resto del sitio) en vez de pegarle a un webhook de n8n en
+         cada carga de página -- así nunca le agrega carga a la SBC, sin
+         importar cuánta gente entre. Para cambiar el aviso, editá
+         aviso.json y hacé commit/push (podés editarlo directo desde la web
+         de GitHub, no hace falta nada instalado). Formato:
+           { "aviso": true|false, "tipo_aviso": "vacaciones"|"maint",
+             "titulo": "...", "mensaje": "..." }
+         Los cambios pueden tardar unos minutos en verse por el cache del
+         CDN de GitHub Pages -- es esperable, no es un bug. -->
+    <script>
+        (() => {
+            const AVISO_JSON_URL = 'aviso.json';
+
+            // Estado global simple para que el script del cotizador (que vive en un
+            // <script type="module"> aparte, con su propio scope) sepa si hay que
+            // bloquear el formulario de presupuesto por vacaciones. "aviso:ready" se
+            // dispara siempre (haya o no aviso activo) para que el cotizador pueda
+            // reaccionar aunque la verificación termine después de que ya haya
+            // habilitado el formulario por su cuenta.
+            window.__avisoState = { checked: false, vacationLock: false, message: '' };
+
+            const backdrop = document.getElementById('aviso-modal-backdrop');
+            const closeBtn = document.getElementById('aviso-modal-close');
+            const iconEl = document.getElementById('aviso-modal-icon');
+            const titleEl = document.getElementById('aviso-modal-title');
+            const messageEl = document.getElementById('aviso-modal-message');
+
+            if (!backdrop) return;
+
+            let cerrable = true;
+
+            function openModal() {
+                backdrop.classList.add('active');
+                backdrop.classList.toggle('no-cerrable', !cerrable);
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeModal() {
+                if (!cerrable) return;
+                backdrop.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            closeBtn.addEventListener('click', closeModal);
+            backdrop.addEventListener('click', (e) => {
+                if (e.target === backdrop) closeModal();
+            });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && backdrop.classList.contains('active')) closeModal();
+            });
+
+            function mostrarVacaciones(data) {
+                cerrable = true;
+                iconEl.textContent = '🏖️';
+                titleEl.textContent = data.titulo || 'Estamos de vacaciones';
+                messageEl.textContent = data.mensaje || '';
+                openModal();
+
+                window.__avisoState.vacationLock = true;
+                window.__avisoState.message = data.mensaje
+                    || 'No estamos tomando pedidos por vacaciones en este momento.';
+            }
+
+            function mostrarMantenimiento(data) {
+                cerrable = false;
+                iconEl.textContent = '🔧';
+                titleEl.textContent = data.titulo || 'Sitio en mantenimiento';
+                messageEl.textContent = data.mensaje || '';
+                openModal();
+            }
+
+            async function verificarAviso() {
+                try {
+                    const response = await fetch(AVISO_JSON_URL);
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    const data = await response.json();
+
+                    if (data.aviso && data.tipo_aviso === 'vacaciones') {
+                        mostrarVacaciones(data);
+                    } else if (data.aviso && data.tipo_aviso === 'maint') {
+                        mostrarMantenimiento(data);
+                    }
+                } catch (err) {
+                    // Si no se puede leer (ej. todavía no existe aviso.json),
+                    // el sitio se comporta como si no hubiera aviso -- nunca rompe nada.
+                    console.error('No se pudo verificar el aviso del sitio', err);
+                } finally {
+                    window.__avisoState.checked = true;
+                    document.dispatchEvent(new CustomEvent('aviso:ready'));
+                }
+            }
+
+            verificarAviso();
+        })();
+    </script>
+
     <!-- ===== VISOR 3D (cotizador) — Three.js vía CDN, sin build step ===== -->
     <script type="importmap">
     {
         "imports": {
             "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
             "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+        },
+        "integrity": {
+            "https://unpkg.com/three@0.160.0/build/three.module.js": "sha384-61S/Nu32S3E5+n+KpCOTb2eRYps6fVKm+9Gz1QBvSePFthb46f063Aa/qe/lykFZ",
+            "https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js": "sha384-qlO/ZugKPxAQUAvTlQoo0QECzxJIJySZmCF/DHdb2Xn/hHndFwX/vfUAC9Hbk6LP",
+            "https://unpkg.com/three@0.160.0/examples/jsm/loaders/STLLoader.js": "sha384-iUykpV7CnAlHYQ2KS0JYVxQcsk6JdCjM1k3R0BuPqwd5p2g2A8HioqUrteJrWZKo",
+            "https://unpkg.com/three@0.160.0/examples/jsm/loaders/3MFLoader.js": "sha384-sNjxdNRfLxV9LoIjoBMFcSybGWMwumlLlc9xWNOXUrycuDCJJ7NCMEcbSdWwI4r1",
+            "https://unpkg.com/three@0.160.0/examples/jsm/libs/fflate.module.js": "sha384-snNAi9XXYJRekU4SDTRWA1r1x/wKnErG2M27uvwQB1fd75zxIe1wC2PeBTl1+/Yy"
         }
     }
     </script>
@@ -1811,6 +2759,13 @@
             const MAX_FILE_SIZE = 25 * 1024 * 1024;
             const MODEL_COLOR = 0xEDEDF5;
 
+            // Para probar en tu PC con backend/servidor_local_cotizador.py, cambiá esto
+            // temporalmente a 'http://localhost:8080/cotizar' y volvé a poner el dominio
+            // real antes de publicar.
+            const COTIZADOR_API_URL = 'https://internal.lamaquineria3d.com.ar/webhook/cotizar';
+
+            const ORDEN_API_URL = 'https://internal.lamaquineria3d.com.ar/webhook/orden-trabajo';
+
             const dropzone = document.getElementById('viewer-dropzone');
             const fileInput = document.getElementById('viewer-file-input');
             const canvasWrap = document.getElementById('viewer-canvas-wrap');
@@ -1819,9 +2774,51 @@
             const loadingEl = document.getElementById('viewer-loading');
             const errorEl = document.getElementById('viewer-error');
 
+            const cotFormFields = document.getElementById('cotizador-form-fields');
+            const cotMaterial = document.getElementById('cot-material');
+            const cotSizeDetected = document.getElementById('cot-size-detected');
+            const cotAltura = document.getElementById('cot-altura');
+            const cotCantidad = document.getElementById('cot-cantidad');
+            const cotCalcBtn = document.getElementById('cotizador-calc-btn');
+            const cotFormHint = document.getElementById('cotizador-form-hint');
+            const cotModalBackdrop = document.getElementById('cotizador-modal-backdrop');
+            const cotModalClose = document.getElementById('cotizador-modal-close');
+            const cotModalLoading = document.getElementById('cotizador-modal-loading');
+            const cotModalContent = document.getElementById('cotizador-modal-content');
+            const cotModalError = document.getElementById('cotizador-modal-error');
+            const cotResPrecio = document.getElementById('cot-res-precio');
+            const cotResAviso = document.getElementById('cot-res-aviso');
+
+            const ordenTrabajoBtn = document.getElementById('orden-trabajo-btn');
+            const ordenModalBackdrop = document.getElementById('orden-modal-backdrop');
+            const ordenModalClose = document.getElementById('orden-modal-close');
+            const ordenModalFormView = document.getElementById('orden-modal-form-view');
+            const ordenModalLoading = document.getElementById('orden-modal-loading');
+            const ordenModalSuccess = document.getElementById('orden-modal-success');
+            const ordenModalSuccessMsg = document.getElementById('orden-modal-success-msg');
+            const ordenSuccessCloseBtn = document.getElementById('orden-success-close-btn');
+            const ordenModalError = document.getElementById('orden-modal-error');
+            const ordenSubmitBtn = document.getElementById('orden-submit-btn');
+            const ordenNombre = document.getElementById('orden-nombre');
+            const ordenTelefono = document.getElementById('orden-telefono');
+            const ordenEmail = document.getElementById('orden-email');
+            const ordenNotas = document.getElementById('orden-notas');
+            const ordenArchivoInput = document.getElementById('orden-archivo-input');
+            const ordenArchivoBtn = document.getElementById('orden-archivo-btn');
+            const ordenArchivoNombre = document.getElementById('orden-archivo-nombre');
+            const ordenNombreError = document.getElementById('orden-nombre-error');
+            const ordenTelefonoError = document.getElementById('orden-telefono-error');
+            const ordenEmailError = document.getElementById('orden-email-error');
+            const ordenNotasError = document.getElementById('orden-notas-error');
+            const ordenArchivoError = document.getElementById('orden-archivo-error');
+
             if (!dropzone || !canvasWrap) return;
 
             let scene, camera, renderer, controls, currentModel;
+            let currentFile = null;
+            let currentSizeMM = null;
+            let ordenArchivo = null;
+            let ultimoPresupuesto = null;
 
             function showError(msg) {
                 errorEl.textContent = msg;
@@ -1854,6 +2851,11 @@
 
                 scene = new THREE.Scene();
                 camera = new THREE.PerspectiveCamera(45, 1, 0.1, 5000);
+                // Los STL/3MF de impresión 3D vienen en eje Z-up (igual que en el
+                // slicer), pero three.js orbita por defecto alrededor del eje Y. Sin
+                // esto, arrastrar para "girar" la pieza la hace tambalear en vez de
+                // rotar prolijamente sobre su propio eje vertical.
+                camera.up.set(0, 0, 1);
 
                 renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
                 renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
@@ -1910,6 +2912,8 @@
                 controls.minDistance = maxDim * 0.3;
                 controls.maxDistance = maxDim * 8;
                 controls.update();
+
+                return { x: size.x, y: size.y, z: size.z };
             }
 
             function disposeMaterial(material) {
@@ -2250,12 +3254,361 @@
                 return found;
             }
 
+            // --- Formulario de cotización -------------------------------------
+            // El cálculo real (peso, tiempo, precio) lo hace el backend
+            // (cotizar.py vía n8n), que además conoce los costos y márgenes
+            // privados del taller. Acá solo mostramos el resultado.
+
+            function openCotModal() {
+                cotModalBackdrop.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeCotModal() {
+                cotModalBackdrop.classList.remove('active');
+                cotModalLoading.classList.remove('active');
+                cotModalContent.classList.remove('active');
+                cotModalError.classList.remove('visible');
+                document.body.style.overflow = '';
+            }
+
+            const defaultFormHintText = cotFormHint.textContent;
+
+            // Si aviso.json tiene aviso=true + tipo_aviso=vacaciones, el script
+            // de aviso (más arriba, en un <script> aparte) deja la marca en
+            // window.__avisoState. Acá solo la leemos y, si corresponde,
+            // deshabilitamos el formulario -- nunca al revés.
+            function applyVacationLockIfActive() {
+                if (window.__avisoState && window.__avisoState.vacationLock) {
+                    cotFormFields.classList.add('disabled');
+                    cotCalcBtn.disabled = true;
+                    cotFormHint.textContent = window.__avisoState.message
+                        || 'No estamos tomando pedidos por vacaciones en este momento.';
+                    cotFormHint.style.display = '';
+                    return true;
+                }
+                return false;
+            }
+
+            function onModelLoaded(file, sizeMM) {
+                currentFile = file;
+                currentSizeMM = sizeMM;
+                ultimoPresupuesto = null;
+                cotAltura.value = '';
+                cotAltura.placeholder = `Alto original (${sizeMM.z.toFixed(1)}mm)`;
+                cotSizeDetected.textContent =
+                    `Detectado: ${sizeMM.x.toFixed(1)} × ${sizeMM.y.toFixed(1)} × ${sizeMM.z.toFixed(1)} mm (ancho × largo × alto)`;
+                cotFormFields.classList.remove('disabled');
+                cotCalcBtn.disabled = false;
+                cotFormHint.style.display = 'none';
+                closeCotModal();
+                applyVacationLockIfActive();
+            }
+
+            function onModelCleared() {
+                currentFile = null;
+                currentSizeMM = null;
+                ultimoPresupuesto = null;
+                cotAltura.value = '';
+                cotAltura.placeholder = 'Alto original';
+                cotSizeDetected.textContent = 'Subí un archivo para detectar el tamaño';
+                cotFormFields.classList.add('disabled');
+                cotCalcBtn.disabled = true;
+                cotFormHint.textContent = defaultFormHintText;
+                cotFormHint.style.display = '';
+                closeCotModal();
+                applyVacationLockIfActive();
+            }
+
+            async function calcularPresupuesto() {
+                if (!currentFile || !currentSizeMM) return;
+
+                let escala = 1;
+                const alturaDeseadaCm = parseFloat(cotAltura.value);
+                if (Number.isFinite(alturaDeseadaCm) && alturaDeseadaCm > 0 && currentSizeMM.z > 0) {
+                    escala = (alturaDeseadaCm * 10) / currentSizeMM.z;
+                }
+
+                const cantidad = Math.max(1, parseInt(cotCantidad.value, 10) || 1);
+                const materialSeleccionado = cotMaterial.value;
+
+                const formData = new FormData();
+                formData.append('archivo', currentFile);
+                formData.append('material', materialSeleccionado);
+                formData.append('escala', String(escala));
+                formData.append('cantidad', String(cantidad));
+
+                openCotModal();
+                cotModalLoading.classList.add('active');
+                cotModalContent.classList.remove('active');
+                cotModalError.classList.remove('visible');
+                cotCalcBtn.disabled = true;
+
+                try {
+                    const response = await fetch(COTIZADOR_API_URL, { method: 'POST', body: formData });
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    const data = await response.json();
+
+                    if (data.error) {
+                        throw new Error(data.mensaje || 'No se pudo calcular el presupuesto.');
+                    }
+
+                    // Redondeo al centenar mas cercano (sin centavos): 18014.02 -> 18000,
+                    // 18078.02 -> 18100. Se redondea una sola vez aca, asi el precio
+                    // mostrado y el que se manda despues en la orden de trabajo coinciden.
+                    const precioRedondeado = Math.round(Number(data.precio_total) / 100) * 100;
+
+                    cotResPrecio.textContent = `$${precioRedondeado.toLocaleString('es-AR')} ${data.moneda || 'ARS'}`;
+                    cotResAviso.textContent = data.aviso || 'Precio aproximado.';
+                    cotModalContent.classList.add('active');
+
+                    // Se guarda para adjuntarlo despues a la orden de trabajo, si el
+                    // usuario decide generarla desde este mismo presupuesto.
+                    ultimoPresupuesto = {
+                        material: materialSeleccionado,
+                        cantidad,
+                        precio_total: precioRedondeado,
+                        peso_total_g: data.peso_total_g,
+                        moneda: data.moneda || 'ARS',
+                    };
+                } catch (err) {
+                    console.error(err);
+                    cotModalError.textContent =
+                        'No pudimos calcular el presupuesto automático en este momento. Escribinos por Instagram o WhatsApp y te cotizamos la pieza a mano.';
+                    cotModalError.classList.add('visible');
+                } finally {
+                    cotModalLoading.classList.remove('active');
+                    cotCalcBtn.disabled = false;
+                }
+            }
+
+            if (cotCalcBtn) {
+                cotCalcBtn.addEventListener('click', calcularPresupuesto);
+                cotModalClose.addEventListener('click', closeCotModal);
+                cotModalBackdrop.addEventListener('click', (e) => {
+                    if (e.target === cotModalBackdrop) closeCotModal();
+                });
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && cotModalBackdrop.classList.contains('active')) closeCotModal();
+                });
+                // Por si la verificación del aviso (ver <script> aparte, arriba)
+                // termina después de que el usuario ya subió un archivo y
+                // habilitó el formulario -- lo vuelve a bloquear igual.
+                document.addEventListener('aviso:ready', applyVacationLockIfActive);
+                onModelCleared();
+            }
+
+            // --- Orden de trabajo -----------------------------------------------
+            // Formulario que dispara un segundo workflow de n8n (independiente del
+            // de cotización) para generar una orden de trabajo real. Por ahora ese
+            // workflow es un stub que solo devuelve un número de orden fijo.
+
+            function actualizarNombreArchivoOrden() {
+                ordenArchivoNombre.textContent = ordenArchivo ? ordenArchivo.name : 'Ningún archivo adjunto';
+            }
+
+            function limpiarErroresOrden() {
+                [ordenNombre, ordenTelefono, ordenEmail, ordenNotas].forEach((el) => {
+                    el.closest('.form-field').classList.remove('invalid');
+                });
+                ordenArchivoNombre.closest('.form-field').classList.remove('invalid');
+                [ordenNombreError, ordenTelefonoError, ordenEmailError, ordenNotasError, ordenArchivoError]
+                    .forEach((el) => {
+                        el.textContent = '';
+                        el.classList.remove('visible');
+                    });
+            }
+
+            function marcarErrorCampo(campoEl, errorEl, mensaje) {
+                campoEl.closest('.form-field').classList.add('invalid');
+                errorEl.textContent = mensaje;
+                errorEl.classList.add('visible');
+            }
+
+            function abrirOrdenModal() {
+                // Precarga el archivo que ya se subió al visor, si hay uno --
+                // el usuario puede cambiarlo con el botón "Cambiar" igual.
+                ordenArchivo = currentFile || null;
+                actualizarNombreArchivoOrden();
+
+                ordenNombre.value = '';
+                ordenTelefono.value = '';
+                ordenEmail.value = '';
+                ordenNotas.value = '';
+                limpiarErroresOrden();
+
+                ordenModalFormView.classList.remove('hidden');
+                ordenModalLoading.classList.remove('active');
+                ordenModalSuccess.classList.remove('active');
+                ordenModalError.classList.remove('visible');
+
+                closeCotModal();
+                ordenModalBackdrop.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function cerrarOrdenModal() {
+                ordenModalBackdrop.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            function validarNombre(valor) {
+                const v = valor.trim();
+                if (!v) return 'Ingresá tu nombre y apellido.';
+                if (v.length < 3) return 'El nombre es demasiado corto.';
+                if (v.length > 80) return 'El nombre es demasiado largo.';
+                if (!/^[A-Za-zÀ-ÿ\s'-]+$/.test(v)) return 'Usá solo letras, espacios y guiones.';
+                return '';
+            }
+
+            function validarTelefonoAR(valor) {
+                const v = valor.trim();
+                if (!v) return 'Ingresá tu teléfono.';
+                if (!/^[\d\s()+-]+$/.test(v)) {
+                    return 'El teléfono solo puede tener números, espacios, guiones y +.';
+                }
+
+                const digitos = v.replace(/\D/g, '');
+
+                // Formatos aceptados (Argentina), sobre el número solo con dígitos:
+                //  10 dígitos            -> área + número local, sin prefijos        (1123456789)
+                //  11 dígitos, con "0"    -> prefijo de trunk local                   (01123456789)
+                //  11 dígitos, con "9"    -> marca de celular sin código de país      (91123456789)
+                //  12 dígitos, con "54"   -> código de país + área + número           (541123456789)
+                //  13 dígitos, con "549"  -> código de país + celular + área + número (5491123456789)
+                const patrones = [/^\d{10}$/, /^0\d{10}$/, /^9\d{10}$/, /^54\d{10}$/, /^549\d{10}$/];
+                const esValido = patrones.some((re) => re.test(digitos));
+
+                if (!esValido) {
+                    return 'Número inválido. Ejemplo: 11 1234-5678 o +54 9 11 1234-5678.';
+                }
+                return '';
+            }
+
+            function validarEmail(valor) {
+                const v = valor.trim();
+                if (!v) return 'Ingresá tu email.';
+                if (v.length > 120) return 'El email es demasiado largo.';
+                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) return 'El email no parece válido.';
+                return '';
+            }
+
+            function validarNotas(valor) {
+                if (valor.length > 500) return 'Máximo 500 caracteres.';
+                return '';
+            }
+
+            function validarArchivoOrden(archivo) {
+                if (!archivo) return 'Adjuntá tu archivo STL o 3MF.';
+                const ext = archivo.name.slice(archivo.name.lastIndexOf('.')).toLowerCase();
+                if (ext !== '.stl' && ext !== '.3mf') return 'Formato no soportado. Usá .stl o .3mf.';
+                if (archivo.size > MAX_FILE_SIZE) {
+                    return `El archivo pesa ${(archivo.size / 1024 / 1024).toFixed(1)}MB. El máximo permitido es 25MB.`;
+                }
+                return '';
+            }
+
+            function validarFormularioOrden() {
+                limpiarErroresOrden();
+                let ok = true;
+
+                const errNombre = validarNombre(ordenNombre.value);
+                if (errNombre) { marcarErrorCampo(ordenNombre, ordenNombreError, errNombre); ok = false; }
+
+                const errTelefono = validarTelefonoAR(ordenTelefono.value);
+                if (errTelefono) { marcarErrorCampo(ordenTelefono, ordenTelefonoError, errTelefono); ok = false; }
+
+                const errEmail = validarEmail(ordenEmail.value);
+                if (errEmail) { marcarErrorCampo(ordenEmail, ordenEmailError, errEmail); ok = false; }
+
+                const errNotas = validarNotas(ordenNotas.value);
+                if (errNotas) { marcarErrorCampo(ordenNotas, ordenNotasError, errNotas); ok = false; }
+
+                const errArchivo = validarArchivoOrden(ordenArchivo);
+                if (errArchivo) {
+                    marcarErrorCampo(ordenArchivoNombre, ordenArchivoError, errArchivo);
+                    ok = false;
+                }
+
+                return ok;
+            }
+
+            async function enviarOrden() {
+                if (!validarFormularioOrden()) return;
+
+                const formData = new FormData();
+                formData.append('nombre', ordenNombre.value.trim());
+                formData.append('telefono', ordenTelefono.value.trim());
+                formData.append('email', ordenEmail.value.trim());
+                formData.append('notas', ordenNotas.value.trim());
+                formData.append('archivo', ordenArchivo);
+
+                // Si el archivo adjunto es el mismo que se usó para cotizar, se manda
+                // también el presupuesto ya calculado (material/cantidad/precio/peso)
+                // para que la orden quede completa sin que el taller lo tenga que
+                // volver a calcular a mano.
+                if (ultimoPresupuesto && ordenArchivo === currentFile) {
+                    formData.append('material', ultimoPresupuesto.material);
+                    formData.append('cantidad', String(ultimoPresupuesto.cantidad));
+                    formData.append('precio_total', String(ultimoPresupuesto.precio_total));
+                    formData.append('peso_total_g', String(ultimoPresupuesto.peso_total_g));
+                    formData.append('moneda', ultimoPresupuesto.moneda);
+                }
+
+                ordenModalFormView.classList.add('hidden');
+                ordenModalLoading.classList.add('active');
+                ordenModalError.classList.remove('visible');
+                ordenSubmitBtn.disabled = true;
+
+                try {
+                    const response = await fetch(ORDEN_API_URL, { method: 'POST', body: formData });
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    const data = await response.json();
+
+                    if (data.error) throw new Error(data.mensaje || 'No se pudo generar la orden.');
+
+                    ordenModalSuccessMsg.textContent = data.mensaje || `Número de orden ${data.numero_orden || ''}`;
+                    ordenModalSuccess.classList.add('active');
+                } catch (err) {
+                    console.error(err);
+                    ordenModalFormView.classList.remove('hidden');
+                    ordenModalError.textContent =
+                        'No pudimos generar la orden en este momento. Escribinos por Instagram o WhatsApp y lo coordinamos a mano.';
+                    ordenModalError.classList.add('visible');
+                } finally {
+                    ordenModalLoading.classList.remove('active');
+                    ordenSubmitBtn.disabled = false;
+                }
+            }
+
+            if (ordenTrabajoBtn) {
+                ordenTrabajoBtn.addEventListener('click', abrirOrdenModal);
+                ordenModalClose.addEventListener('click', cerrarOrdenModal);
+                ordenSuccessCloseBtn.addEventListener('click', cerrarOrdenModal);
+                ordenModalBackdrop.addEventListener('click', (e) => {
+                    if (e.target === ordenModalBackdrop) cerrarOrdenModal();
+                });
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && ordenModalBackdrop.classList.contains('active')) cerrarOrdenModal();
+                });
+                ordenArchivoBtn.addEventListener('click', () => ordenArchivoInput.click());
+                ordenArchivoInput.addEventListener('change', () => {
+                    const f = ordenArchivoInput.files && ordenArchivoInput.files[0];
+                    if (f) {
+                        ordenArchivo = f;
+                        actualizarNombreArchivoOrden();
+                    }
+                });
+                ordenSubmitBtn.addEventListener('click', enviarOrden);
+            }
+
             function returnToDropzone() {
                 clearModel();
                 canvasWrap.classList.remove('active');
                 dropzone.style.display = '';
                 fileInput.value = '';
                 fileInfo.textContent = '';
+                onModelCleared();
             }
 
             function resetViewer() {
@@ -2300,9 +3653,10 @@
                         clearModel();
                         currentModel = object;
                         scene.add(object);
-                        frameObject(object);
+                        const sizeMM = frameObject(object);
                         controls.autoRotate = true;
                         fileInfo.textContent = `${name} · ${(file.size / 1024 / 1024).toFixed(1)}MB`;
+                        onModelLoaded(file, sizeMM);
                     } catch (err) {
                         console.error(err);
                         if (ext === '.3mf') {
