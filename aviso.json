@@ -1,6 +1,6 @@
 {
-  "aviso": false,
-  "tipo_aviso": "vacaciones",
-  "titulo": "",
-  "mensaje": ""
+  "aviso": true,
+  "tipo_aviso": "maint",
+  "titulo": "Sitio en mantenimiento",
+  "mensaje": "El sitio está en mantenimiento. Estamos trabajando para solucionarlo lo antes posible."
 }
