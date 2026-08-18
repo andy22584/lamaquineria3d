@@ -2,7 +2,7 @@
 
 > **Tus ideas, en 3D.** Servicio profesional de impresión 3D, prototipado rápido y fabricación digital.
 
-![La Maquinería 3D Logo](logo.png)
+![La Maquinería 3D Logo](images/logo.png)
 
 ---
 
