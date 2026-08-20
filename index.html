@@ -2248,6 +2248,40 @@
             box-shadow: 0 0 0 3px rgba(52, 211, 153, .25);
         }
 
+        .chat-avatar {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--magenta) 0%, var(--magenta-dark) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .chat-msg-avatar {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--magenta) 0%, var(--magenta-dark) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .chat-msg-bot-row {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            max-width: 84%;
+            align-self: flex-start;
+        }
+
+        .chat-msg-bot-row .chat-msg {
+            max-width: 100%;
+        }
+
         .chat-close-btn {
             background: rgba(255, 255, 255, .08);
             border: 1px solid rgba(255, 255, 255, .15);
@@ -4259,12 +4293,48 @@
         })();
     </script>
 
-    <!-- ===== AGENTE DE CHAT (GPT-4o-mini via n8n) ===== -->
-    <button type="button" class="chat-toggle" id="chat-toggle" aria-label="Abrir chat de ayuda" aria-expanded="false">💬</button>
+    <!-- ===== AGENTE DE CHAT (El Maquinista, GPT-4o-mini via n8n) ===== -->
+    <button type="button" class="chat-toggle" id="chat-toggle" aria-label="Abrir chat con El Maquinista"
+        aria-expanded="false">
+        <svg width="26" height="26" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <g fill="#fff">
+                <rect x="18" y="2" width="4" height="7" rx="1" />
+                <rect x="18" y="2" width="4" height="7" rx="1" transform="rotate(45 20 20)" />
+                <rect x="18" y="2" width="4" height="7" rx="1" transform="rotate(90 20 20)" />
+                <rect x="18" y="2" width="4" height="7" rx="1" transform="rotate(135 20 20)" />
+                <rect x="18" y="2" width="4" height="7" rx="1" transform="rotate(180 20 20)" />
+                <rect x="18" y="2" width="4" height="7" rx="1" transform="rotate(225 20 20)" />
+                <rect x="18" y="2" width="4" height="7" rx="1" transform="rotate(270 20 20)" />
+                <rect x="18" y="2" width="4" height="7" rx="1" transform="rotate(315 20 20)" />
+            </g>
+            <circle cx="20" cy="20" r="11" fill="#fff" />
+            <circle cx="20" cy="20" r="5" fill="#E0006A" />
+        </svg>
+    </button>
 
-    <div class="chat-panel" id="chat-panel" role="dialog" aria-label="Chat con La Maquinería 3D" aria-hidden="true">
+    <div class="chat-panel" id="chat-panel" role="dialog" aria-label="Chat con El Maquinista, La Maquinería 3D"
+        aria-hidden="true">
         <div class="chat-header">
-            <div class="chat-header-title"><span class="dot" aria-hidden="true"></span> Asistente virtual</div>
+            <div class="chat-header-title">
+                <span class="chat-avatar" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g fill="#fff">
+                            <rect x="18" y="2" width="4" height="7" rx="1" />
+                            <rect x="18" y="2" width="4" height="7" rx="1" transform="rotate(45 20 20)" />
+                            <rect x="18" y="2" width="4" height="7" rx="1" transform="rotate(90 20 20)" />
+                            <rect x="18" y="2" width="4" height="7" rx="1" transform="rotate(135 20 20)" />
+                            <rect x="18" y="2" width="4" height="7" rx="1" transform="rotate(180 20 20)" />
+                            <rect x="18" y="2" width="4" height="7" rx="1" transform="rotate(225 20 20)" />
+                            <rect x="18" y="2" width="4" height="7" rx="1" transform="rotate(270 20 20)" />
+                            <rect x="18" y="2" width="4" height="7" rx="1" transform="rotate(315 20 20)" />
+                        </g>
+                        <circle cx="20" cy="20" r="11" fill="#fff" />
+                        <circle cx="20" cy="20" r="5" fill="#E0006A" />
+                    </svg>
+                </span>
+                El Maquinista
+                <span class="dot" aria-hidden="true"></span>
+            </div>
             <button type="button" class="chat-close-btn" id="chat-close-btn" title="Cerrar" aria-label="Cerrar chat">✕</button>
         </div>
         <div class="chat-messages" id="chat-messages" aria-live="polite"></div>
@@ -4280,8 +4350,40 @@
             // TODO: reemplazar por la URL publica una vez armado el tunnel de
             // Cloudflare (mismo patron que COTIZADOR_API_URL/ORDEN_API_URL).
             const CHAT_API_URL = 'https://internal.lamaquineria3d.com.ar/webhook/chat';
-            const HISTORIAL_KEY = 'lm3d-chat-historial';
-            const MAX_HISTORIAL = 8;
+
+            // La memoria de la conversacion ahora la maneja el nodo Memory de n8n
+            // (por sessionId, ver docker-sbc/n8n-workflows/chat-agente.json) -- el
+            // navegador ya no manda ni guarda el historial de mensajes, solo un
+            // id de sesion estable mientras dure la pestaña.
+            const SESSION_ID_KEY = 'lm3d-chat-session-id';
+            let chatSessionId = null;
+            try {
+                chatSessionId = sessionStorage.getItem(SESSION_ID_KEY);
+                if (!chatSessionId) {
+                    chatSessionId = (crypto.randomUUID ? crypto.randomUUID() :
+                        `${Date.now()}-${Math.random().toString(36).slice(2)}`);
+                    sessionStorage.setItem(SESSION_ID_KEY, chatSessionId);
+                }
+            } catch (err) {
+                // sessionStorage lleno o deshabilitado -- igual funciona, solo
+                // pierde la memoria de conversacion si se recarga la pagina.
+                chatSessionId = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+            }
+
+            const MAQUINISTA_AVATAR_SVG = `<svg width="14" height="14" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <g fill="#fff">
+                    <rect x="18" y="2" width="4" height="7" rx="1"/>
+                    <rect x="18" y="2" width="4" height="7" rx="1" transform="rotate(45 20 20)"/>
+                    <rect x="18" y="2" width="4" height="7" rx="1" transform="rotate(90 20 20)"/>
+                    <rect x="18" y="2" width="4" height="7" rx="1" transform="rotate(135 20 20)"/>
+                    <rect x="18" y="2" width="4" height="7" rx="1" transform="rotate(180 20 20)"/>
+                    <rect x="18" y="2" width="4" height="7" rx="1" transform="rotate(225 20 20)"/>
+                    <rect x="18" y="2" width="4" height="7" rx="1" transform="rotate(270 20 20)"/>
+                    <rect x="18" y="2" width="4" height="7" rx="1" transform="rotate(315 20 20)"/>
+                </g>
+                <circle cx="20" cy="20" r="11" fill="#fff"/>
+                <circle cx="20" cy="20" r="5" fill="#E0006A"/>
+            </svg>`;
 
             const toggleBtn = document.getElementById('chat-toggle');
             const panel = document.getElementById('chat-panel');
@@ -4293,22 +4395,26 @@
 
             if (!toggleBtn || !panel) return;
 
-            let historial = [];
-            try {
-                historial = JSON.parse(sessionStorage.getItem(HISTORIAL_KEY) || '[]');
-            } catch (err) { historial = []; }
-
-            function guardarHistorial() {
-                try {
-                    sessionStorage.setItem(HISTORIAL_KEY, JSON.stringify(historial.slice(-MAX_HISTORIAL)));
-                } catch (err) { /* localStorage lleno o deshabilitado -- no es critico */ }
-            }
-
             function agregarMensaje(role, texto) {
-                const div = document.createElement('div');
-                div.className = 'chat-msg ' + (role === 'user' ? 'chat-msg-user' : 'chat-msg-bot');
-                div.textContent = texto;
-                messagesEl.appendChild(div);
+                if (role === 'user') {
+                    const div = document.createElement('div');
+                    div.className = 'chat-msg chat-msg-user';
+                    div.textContent = texto;
+                    messagesEl.appendChild(div);
+                } else {
+                    const row = document.createElement('div');
+                    row.className = 'chat-msg-bot-row';
+                    const avatar = document.createElement('span');
+                    avatar.className = 'chat-msg-avatar';
+                    avatar.setAttribute('aria-hidden', 'true');
+                    avatar.innerHTML = MAQUINISTA_AVATAR_SVG;
+                    const bubble = document.createElement('div');
+                    bubble.className = 'chat-msg chat-msg-bot';
+                    bubble.textContent = texto;
+                    row.appendChild(avatar);
+                    row.appendChild(bubble);
+                    messagesEl.appendChild(row);
+                }
                 messagesEl.scrollTop = messagesEl.scrollHeight;
             }
 
@@ -4324,8 +4430,9 @@
             function mostrarEscribiendo(mostrar) {
                 if (mostrar) {
                     escribiendoEl = document.createElement('div');
-                    escribiendoEl.className = 'chat-typing active';
-                    escribiendoEl.innerHTML = '<span></span><span></span><span></span>';
+                    escribiendoEl.className = 'chat-msg-bot-row';
+                    escribiendoEl.innerHTML = '<span class="chat-msg-avatar" aria-hidden="true">' + MAQUINISTA_AVATAR_SVG +
+                        '</span><div class="chat-typing active"><span></span><span></span><span></span></div>';
                     messagesEl.appendChild(escribiendoEl);
                     messagesEl.scrollTop = messagesEl.scrollHeight;
                 } else if (escribiendoEl) {
@@ -4339,7 +4446,7 @@
                 panel.setAttribute('aria-hidden', 'false');
                 toggleBtn.setAttribute('aria-expanded', 'true');
                 if (!messagesEl.children.length) {
-                    agregarMensaje('bot', '¡Hola! Soy el asistente virtual de La Maquinería 3D. Preguntame sobre materiales, cómo cotizar tu pieza, o el estado de un pedido (con el número de orden y el teléfono que usaste).');
+                    agregarMensaje('bot', '¡Hola! Soy El Maquinista, el asistente virtual de La Maquinería 3D. Preguntame sobre materiales, cómo cotizar tu pieza, o el estado de un pedido (necesito el número de orden y el teléfono que usaste).');
                 }
                 input.focus();
             }
@@ -4384,7 +4491,7 @@
                     const response = await fetch(CHAT_API_URL, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ message: mensaje, historial }),
+                        body: JSON.stringify({ message: mensaje, sessionId: chatSessionId }),
                     });
                     if (!response.ok) throw new Error(`HTTP ${response.status}`);
                     const data = await response.json();
@@ -4392,11 +4499,6 @@
 
                     mostrarEscribiendo(false);
                     agregarMensaje('bot', respuesta);
-
-                    historial.push({ role: 'user', content: mensaje });
-                    historial.push({ role: 'assistant', content: respuesta });
-                    historial = historial.slice(-MAX_HISTORIAL);
-                    guardarHistorial();
                 } catch (err) {
                     console.error(err);
                     mostrarEscribiendo(false);
