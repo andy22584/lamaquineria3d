@@ -1946,6 +1946,82 @@
             text-decoration: underline;
         }
 
+        .contacto-right {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .contacto-form-btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .contacto-modal-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(13, 13, 13, .65);
+            backdrop-filter: blur(4px);
+            z-index: 2050;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .contacto-modal-backdrop.active {
+            display: flex;
+        }
+
+        .contacto-modal {
+            position: relative;
+            width: 100%;
+            max-width: 440px;
+            max-height: calc(100vh - 48px);
+            overflow-y: auto;
+            background: linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 100%);
+            border: 1px solid rgba(255, 255, 255, .15);
+            border-radius: var(--radius-lg);
+            padding: 32px 28px 28px;
+            box-shadow: var(--shadow-lg);
+            animation: cotizador-modal-in .25s ease;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(224, 0, 106, .5) transparent;
+        }
+
+        .contacto-modal::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .contacto-modal::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .contacto-modal::-webkit-scrollbar-thumb {
+            background: rgba(224, 0, 106, .5);
+            border-radius: 8px;
+        }
+
+        .contacto-modal::-webkit-scrollbar-thumb:hover {
+            background: var(--magenta);
+        }
+
+        .contacto-modal-subtitle {
+            font-size: .82rem;
+            color: rgba(255, 255, 255, .55);
+            margin-top: -12px;
+            margin-bottom: 20px;
+        }
+
+        .contacto-modal-form.hidden {
+            display: none;
+        }
+
+        .contacto-modal-form .form-field {
+            margin-bottom: 16px;
+        }
+
         /* =====================
            FOOTER
         ===================== */
@@ -2082,6 +2158,7 @@
                 padding: 32px 20px;
             }
 
+            .contacto-modal,
             .cotizador-modal {
                 padding: 28px 20px 22px;
             }
@@ -2804,33 +2881,105 @@
                         tiempos y precios.
                     </p>
                 </div>
-                <div class="contacto-card">
-                    <div class="contacto-item">
-                        <div class="contacto-item-icon">
-                            <img src="images/instagram-icon.jpg" alt="Instagram Logo"
-                                style="width: 34px; height: 34px; object-fit: contain;">
+                <div class="contacto-right">
+                    <div class="contacto-card">
+                        <div class="contacto-item">
+                            <div class="contacto-item-icon">
+                                <img src="images/instagram-icon.jpg" alt="Instagram Logo"
+                                    style="width: 34px; height: 34px; object-fit: contain;">
+                            </div>
+                            <div class="contacto-item-text">
+                                <h4>Instagram</h4>
+                                <a href="https://www.instagram.com/lamaquineria.3d" target="_blank"
+                                    rel="noopener">@lamaquineria.3d</a>
+                            </div>
                         </div>
-                        <div class="contacto-item-text">
-                            <h4>Instagram</h4>
-                            <a href="https://www.instagram.com/lamaquineria.3d" target="_blank"
-                                rel="noopener">@lamaquineria.3d</a>
+                        <div class="contacto-item">
+                            <div class="contacto-item-icon">
+                                <img src="images/mercadolibre-icon.jpg" alt="MercadoLibre Logo"
+                                    style="width: 34px; height: 34px; object-fit: contain;">
+                            </div>
+                            <div class="contacto-item-text">
+                                <h4>Mercado Libre</h4>
+                                <a href="https://www.mercadolibre.com.ar" target="_blank" rel="noopener"
+                                    data-i18n="con.ml_link">Visitar tienda oficial</a>
+                            </div>
                         </div>
                     </div>
-                    <div class="contacto-item">
-                        <div class="contacto-item-icon">
-                            <img src="images/mercadolibre-icon.jpg" alt="MercadoLibre Logo"
-                                style="width: 34px; height: 34px; object-fit: contain;">
-                        </div>
-                        <div class="contacto-item-text">
-                            <h4>Mercado Libre</h4>
-                            <a href="https://www.mercadolibre.com.ar" target="_blank" rel="noopener"
-                                data-i18n="con.ml_link">Visitar tienda oficial</a>
-                        </div>
-                    </div>
+
+                    <button type="button" class="btn btn-primary contacto-form-btn" id="contacto-form-btn">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                            aria-hidden="true">
+                            <rect x="2" y="4" width="20" height="16" rx="2" stroke="currentColor" stroke-width="1.8" />
+                            <path d="M3 6l9 7 9-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                        <span>Formulario de contacto</span>
+                    </button>
                 </div>
             </div>
         </div>
     </section>
+
+    <!-- ===== FORMULARIO DE CONTACTO (modal) ===== -->
+    <div class="contacto-modal-backdrop" id="contacto-modal-backdrop">
+        <div class="contacto-modal" role="dialog" aria-modal="true" aria-labelledby="contacto-modal-title">
+            <button type="button" class="cotizador-modal-close" id="contacto-modal-close" title="Cerrar"
+                aria-label="Cerrar">✕</button>
+
+            <div class="contacto-modal-form" id="contacto-modal-form-view">
+                <h3 class="cotizador-modal-title" id="contacto-modal-title">Formulario de contacto</h3>
+                <p class="contacto-modal-subtitle">Contanos tu idea y te respondemos a la brevedad.</p>
+
+                <div class="form-field">
+                    <label for="cf-nombre">Nombre</label>
+                    <input type="text" id="cf-nombre" maxlength="80" autocomplete="name">
+                    <p class="form-field-error" id="cf-nombre-error"></p>
+                </div>
+
+                <div class="form-field">
+                    <label for="cf-email">Email</label>
+                    <input type="email" id="cf-email" maxlength="120" autocomplete="email">
+                    <p class="form-field-error" id="cf-email-error"></p>
+                </div>
+
+                <div class="form-field">
+                    <label for="cf-mensaje">Mensaje</label>
+                    <textarea id="cf-mensaje" maxlength="600" rows="4"></textarea>
+                    <p class="form-field-error" id="cf-mensaje-error"></p>
+                </div>
+
+                <div class="form-field">
+                    <label for="cf-archivo-input">Adjuntar imagen (opcional, máx. 10MB)</label>
+                    <div class="orden-archivo-row">
+                        <span class="orden-archivo-nombre" id="cf-archivo-nombre">Ningún archivo adjunto</span>
+                        <button type="button" class="btn btn-outline orden-archivo-btn"
+                            id="cf-archivo-btn">Adjuntar</button>
+                    </div>
+                    <input type="file" id="cf-archivo-input" accept="image/*" hidden>
+                    <p class="form-field-error" id="cf-archivo-error"></p>
+                </div>
+
+                <button type="button" class="btn btn-primary orden-submit-btn" id="cf-submit-btn">
+                    <span>Enviar mensaje</span>
+                </button>
+                <p class="orden-modal-error" id="cf-modal-error" role="alert"></p>
+            </div>
+
+            <div class="orden-modal-loading" id="contacto-modal-loading">
+                <div class="viewer-spinner" aria-hidden="true"></div>
+                <span>Enviando mensaje…</span>
+            </div>
+
+            <div class="orden-modal-success" id="contacto-modal-success">
+                <div class="orden-modal-success-icon" aria-hidden="true">✅</div>
+                <h3 class="cotizador-modal-title">¡Listo!</h3>
+                <p class="orden-modal-success-msg" id="contacto-modal-success-msg">Recibimos tu mensaje, te vamos a
+                    responder a la brevedad.</p>
+                <button type="button" class="btn btn-primary" id="contacto-success-close-btn">Cerrar</button>
+            </div>
+        </div>
+    </div>
 
     <!-- ===== FOOTER ===== -->
     <footer role="contentinfo">
@@ -3025,6 +3174,9 @@
 
             const ORDEN_API_URL = 'https://internal.lamaquineria3d.com.ar/webhook/orden-trabajo';
 
+            const CONTACTO_API_URL = 'https://internal.lamaquineria3d.com.ar/webhook/contacto';
+            const CONTACTO_MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+
             const dropzone = document.getElementById('viewer-dropzone');
             const fileInput = document.getElementById('viewer-file-input');
             const canvasWrap = document.getElementById('viewer-canvas-wrap');
@@ -3071,6 +3223,26 @@
             const ordenNotasError = document.getElementById('orden-notas-error');
             const ordenArchivoError = document.getElementById('orden-archivo-error');
 
+            const contactoFormBtn = document.getElementById('contacto-form-btn');
+            const contactoModalBackdrop = document.getElementById('contacto-modal-backdrop');
+            const contactoModalClose = document.getElementById('contacto-modal-close');
+            const contactoModalFormView = document.getElementById('contacto-modal-form-view');
+            const contactoModalLoading = document.getElementById('contacto-modal-loading');
+            const contactoModalSuccess = document.getElementById('contacto-modal-success');
+            const contactoSuccessCloseBtn = document.getElementById('contacto-success-close-btn');
+            const cfModalError = document.getElementById('cf-modal-error');
+            const cfSubmitBtn = document.getElementById('cf-submit-btn');
+            const cfNombre = document.getElementById('cf-nombre');
+            const cfEmail = document.getElementById('cf-email');
+            const cfMensaje = document.getElementById('cf-mensaje');
+            const cfArchivoInput = document.getElementById('cf-archivo-input');
+            const cfArchivoBtn = document.getElementById('cf-archivo-btn');
+            const cfArchivoNombre = document.getElementById('cf-archivo-nombre');
+            const cfNombreError = document.getElementById('cf-nombre-error');
+            const cfEmailError = document.getElementById('cf-email-error');
+            const cfMensajeError = document.getElementById('cf-mensaje-error');
+            const cfArchivoError = document.getElementById('cf-archivo-error');
+
             if (!dropzone || !canvasWrap) return;
 
             let scene, camera, renderer, controls, currentModel;
@@ -3078,6 +3250,7 @@
             let currentSizeMM = null;
             let ordenArchivo = null;
             let ultimoPresupuesto = null;
+            let cfArchivo = null;
 
             function showError(msg) {
                 errorEl.textContent = msg;
@@ -3859,6 +4032,138 @@
                     }
                 });
                 ordenSubmitBtn.addEventListener('click', enviarOrden);
+            }
+
+            function actualizarNombreArchivoContacto() {
+                cfArchivoNombre.textContent = cfArchivo ? cfArchivo.name : 'Ningún archivo adjunto';
+            }
+
+            function limpiarErroresContacto() {
+                [cfNombre, cfEmail, cfMensaje].forEach((el) => {
+                    el.closest('.form-field').classList.remove('invalid');
+                });
+                cfArchivoNombre.closest('.form-field').classList.remove('invalid');
+                [cfNombreError, cfEmailError, cfMensajeError, cfArchivoError].forEach((el) => {
+                    el.textContent = '';
+                    el.classList.remove('visible');
+                });
+                cfModalError.classList.remove('visible');
+            }
+
+            function abrirContactoModal() {
+                cfArchivo = null;
+                actualizarNombreArchivoContacto();
+
+                cfNombre.value = '';
+                cfEmail.value = '';
+                cfMensaje.value = '';
+                limpiarErroresContacto();
+
+                contactoModalFormView.classList.remove('hidden');
+                contactoModalLoading.classList.remove('active');
+                contactoModalSuccess.classList.remove('active');
+
+                contactoModalBackdrop.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function cerrarContactoModal() {
+                contactoModalBackdrop.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            function validarMensajeContacto(valor) {
+                const v = valor.trim();
+                if (!v) return 'Contanos brevemente tu idea o consulta.';
+                if (v.length < 5) return 'El mensaje es demasiado corto.';
+                if (v.length > 600) return 'Máximo 600 caracteres.';
+                return '';
+            }
+
+            function validarArchivoContacto(archivo) {
+                if (!archivo) return ''; // opcional
+                if (!archivo.type.startsWith('image/')) return 'Adjuntá una imagen (JPG, PNG, etc.).';
+                if (archivo.size > CONTACTO_MAX_FILE_SIZE) {
+                    return `La imagen pesa ${(archivo.size / 1024 / 1024).toFixed(1)}MB. El máximo permitido es 10MB.`;
+                }
+                return '';
+            }
+
+            function validarFormularioContacto() {
+                limpiarErroresContacto();
+                let ok = true;
+
+                const errNombre = validarNombre(cfNombre.value);
+                if (errNombre) { marcarErrorCampo(cfNombre, cfNombreError, errNombre); ok = false; }
+
+                const errEmail = validarEmail(cfEmail.value);
+                if (errEmail) { marcarErrorCampo(cfEmail, cfEmailError, errEmail); ok = false; }
+
+                const errMensaje = validarMensajeContacto(cfMensaje.value);
+                if (errMensaje) { marcarErrorCampo(cfMensaje, cfMensajeError, errMensaje); ok = false; }
+
+                const errArchivo = validarArchivoContacto(cfArchivo);
+                if (errArchivo) {
+                    marcarErrorCampo(cfArchivoNombre, cfArchivoError, errArchivo);
+                    ok = false;
+                }
+
+                return ok;
+            }
+
+            async function enviarContacto() {
+                if (!validarFormularioContacto()) return;
+
+                const formData = new FormData();
+                formData.append('nombre', cfNombre.value.trim());
+                formData.append('email', cfEmail.value.trim());
+                formData.append('mensaje', cfMensaje.value.trim());
+                if (cfArchivo) formData.append('archivo', cfArchivo);
+
+                contactoModalFormView.classList.add('hidden');
+                contactoModalLoading.classList.add('active');
+                cfModalError.classList.remove('visible');
+                cfSubmitBtn.disabled = true;
+
+                try {
+                    const response = await fetch(CONTACTO_API_URL, { method: 'POST', body: formData });
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    const data = await response.json();
+
+                    if (data.error) throw new Error(data.mensaje || 'No se pudo enviar el mensaje.');
+
+                    contactoModalSuccess.classList.add('active');
+                } catch (err) {
+                    console.error(err);
+                    contactoModalFormView.classList.remove('hidden');
+                    cfModalError.textContent =
+                        'No pudimos enviar tu mensaje en este momento. Escribinos por Instagram y lo vemos a mano.';
+                    cfModalError.classList.add('visible');
+                } finally {
+                    contactoModalLoading.classList.remove('active');
+                    cfSubmitBtn.disabled = false;
+                }
+            }
+
+            if (contactoFormBtn) {
+                contactoFormBtn.addEventListener('click', abrirContactoModal);
+                contactoModalClose.addEventListener('click', cerrarContactoModal);
+                contactoSuccessCloseBtn.addEventListener('click', cerrarContactoModal);
+                contactoModalBackdrop.addEventListener('click', (e) => {
+                    if (e.target === contactoModalBackdrop) cerrarContactoModal();
+                });
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && contactoModalBackdrop.classList.contains('active')) cerrarContactoModal();
+                });
+                cfArchivoBtn.addEventListener('click', () => cfArchivoInput.click());
+                cfArchivoInput.addEventListener('change', () => {
+                    const f = cfArchivoInput.files && cfArchivoInput.files[0];
+                    if (f) {
+                        cfArchivo = f;
+                        actualizarNombreArchivoContacto();
+                    }
+                });
+                cfSubmitBtn.addEventListener('click', enviarContacto);
             }
 
             function returnToDropzone() {
