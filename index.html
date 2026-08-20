@@ -2353,6 +2353,64 @@
             font-style: italic;
         }
 
+        .chat-order-form {
+            background: rgba(255, 255, 255, .08);
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-bottom-left-radius: 4px;
+            border-radius: 14px;
+            padding: 12px 13px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .chat-order-form p {
+            font-size: .82rem;
+            color: rgba(255, 255, 255, .8);
+            margin: 0 0 2px;
+        }
+
+        .chat-order-form input {
+            width: 100%;
+            background: rgba(255, 255, 255, .08);
+            border: 1px solid rgba(255, 255, 255, .18);
+            color: var(--white);
+            border-radius: var(--radius-sm);
+            padding: 8px 10px;
+            font-size: .85rem;
+            font-family: var(--font);
+        }
+
+        .chat-order-form input:focus {
+            outline: none;
+            border-color: var(--magenta-light);
+            background: rgba(255, 255, 255, .12);
+        }
+
+        .chat-order-form-error {
+            display: none;
+            font-size: .76rem;
+            color: #FFD7E8;
+        }
+
+        .chat-order-form-error.visible {
+            display: block;
+        }
+
+        .chat-order-form button {
+            align-self: flex-end;
+            margin-top: 2px;
+            padding: 7px 16px;
+            font-size: .82rem;
+        }
+
+        .chat-order-form.disabled input,
+        .chat-order-form.disabled button {
+            opacity: .5;
+            pointer-events: none;
+        }
+
         .chat-typing {
             align-self: flex-start;
             display: none;
@@ -4351,6 +4409,14 @@
             // Cloudflare (mismo patron que COTIZADOR_API_URL/ORDEN_API_URL).
             const CHAT_API_URL = 'https://internal.lamaquineria3d.com.ar/webhook/chat';
 
+            // Webhook aparte, sin pasar por el Agente ni por ningun tool-calling --
+            // el modelo solo detecta la intencion (ver system prompt de
+            // chat-agente.json) y responde con esta marca fija; el navegador la
+            // detecta y muestra el mini-formulario de abajo, que consulta acá
+            // directo con datos reales de un form, no texto libre parseado.
+            const CHAT_ESTADO_ORDEN_API_URL = 'https://internal.lamaquineria3d.com.ar/webhook/chat-estado-orden';
+            const MARCA_FORM_ORDEN = 'MOSTRAR_FORM_ORDEN';
+
             // La memoria de la conversacion ahora la maneja el nodo Memory de n8n
             // (por sessionId, ver docker-sbc/n8n-workflows/chat-agente.json) -- el
             // navegador ya no manda ni guarda el historial de mensajes, solo un
@@ -4441,12 +4507,82 @@
                 }
             }
 
+            function mostrarFormOrden() {
+                const row = document.createElement('div');
+                row.className = 'chat-msg-bot-row';
+
+                const avatar = document.createElement('span');
+                avatar.className = 'chat-msg-avatar';
+                avatar.setAttribute('aria-hidden', 'true');
+                avatar.innerHTML = MAQUINISTA_AVATAR_SVG;
+
+                const box = document.createElement('div');
+                box.className = 'chat-order-form';
+                box.innerHTML =
+                    '<p>Pasame el número de orden y el teléfono que usaste al pedir:</p>' +
+                    '<input type="number" min="1" class="cof-numero" placeholder="Número de orden" aria-label="Número de orden">' +
+                    '<input type="tel" class="cof-telefono" placeholder="Teléfono" aria-label="Teléfono">' +
+                    '<p class="chat-order-form-error"></p>' +
+                    '<button type="button" class="btn btn-primary">Consultar</button>';
+
+                row.appendChild(avatar);
+                row.appendChild(box);
+                messagesEl.appendChild(row);
+                messagesEl.scrollTop = messagesEl.scrollHeight;
+
+                const numeroInput = box.querySelector('.cof-numero');
+                const telefonoInput = box.querySelector('.cof-telefono');
+                const errorEl = box.querySelector('.chat-order-form-error');
+                const btn = box.querySelector('button');
+
+                async function consultar() {
+                    const numeroOrden = numeroInput.value.trim();
+                    const telefono = telefonoInput.value.trim();
+                    errorEl.classList.remove('visible');
+
+                    if (!numeroOrden || !telefono) {
+                        errorEl.textContent = 'Completá los dos datos.';
+                        errorEl.classList.add('visible');
+                        return;
+                    }
+
+                    box.classList.add('disabled');
+                    mostrarEscribiendo(true);
+
+                    try {
+                        const response = await fetch(CHAT_ESTADO_ORDEN_API_URL, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ numeroOrden, telefono }),
+                        });
+                        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                        const data = await response.json();
+                        mostrarEscribiendo(false);
+                        agregarMensaje('bot', data.mensaje || 'No pude consultar la orden. Probá de nuevo en un rato.');
+                    } catch (err) {
+                        console.error(err);
+                        mostrarEscribiendo(false);
+                        agregarError('No pudimos consultar el estado en este momento. Escribinos por Instagram @lamaquineria.3d.');
+                    } finally {
+                        row.remove();
+                    }
+                }
+
+                btn.addEventListener('click', consultar);
+                [numeroInput, telefonoInput].forEach((el) => {
+                    el.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter') { e.preventDefault(); consultar(); }
+                    });
+                });
+                numeroInput.focus();
+            }
+
             function abrirChat() {
                 panel.classList.add('open');
                 panel.setAttribute('aria-hidden', 'false');
                 toggleBtn.setAttribute('aria-expanded', 'true');
                 if (!messagesEl.children.length) {
-                    agregarMensaje('bot', '¡Hola! Soy El Maquinista, el asistente virtual de La Maquinería 3D. Preguntame sobre materiales, cómo cotizar tu pieza, o el estado de un pedido (necesito el número de orden y el teléfono que usaste).');
+                    agregarMensaje('bot', '¡Hola! Soy El Maquinista, el asistente virtual de La Maquinería 3D. Preguntame sobre materiales, cómo cotizar tu pieza, o el estado de un pedido.');
                 }
                 input.focus();
             }
@@ -4498,7 +4634,11 @@
                     const respuesta = data.respuesta || 'No pude generar una respuesta. Probá de nuevo en un rato.';
 
                     mostrarEscribiendo(false);
-                    agregarMensaje('bot', respuesta);
+                    if (respuesta.trim() === MARCA_FORM_ORDEN || respuesta.includes(MARCA_FORM_ORDEN)) {
+                        mostrarFormOrden();
+                    } else {
+                        agregarMensaje('bot', respuesta);
+                    }
                 } catch (err) {
                     console.error(err);
                     mostrarEscribiendo(false);
