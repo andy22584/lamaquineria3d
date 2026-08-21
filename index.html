@@ -3095,6 +3095,16 @@
     </footer>
 
     <script>
+        // Header mandado en cada llamada a un webhook de n8n (junto al chequeo de
+        // Origin que ya hace la regla de Cloudflare). No es un secreto real -- es
+        // JS de un sitio publico, cualquiera puede leerlo con "ver codigo fuente"
+        // -- pero saca el bloqueo del nivel "cualquier curl sin pensar" al nivel
+        // "hay que mirar el JS una vez". Si se rota, hay que actualizar el mismo
+        // valor en la regla WAF de Cloudflare (docker-sbc/README.md seccion 9.5)
+        // y en la copia duplicada dentro del <script type="module"> de mas abajo
+        // (los modules no ven este scope, asi que no alcanza con cambiarla acá).
+        const SITE_KEY = '24e869f6d8c42b70a9ba08650708f1f2cd7f61acd44fb4db';
+
         /* ===== NAV ===== */
         const navbar = document.getElementById('navbar');
         const navToggle = document.getElementById('nav-toggle');
@@ -3258,6 +3268,14 @@
         (() => {
             const MAX_FILE_SIZE = 25 * 1024 * 1024;
             const MODEL_COLOR = 0xEDEDF5;
+
+            // Repetida acá (mismo valor que la del primer <script>, arriba del todo):
+            // este bloque es type="module", y los modules tienen scope propio -- no
+            // ven el scope global compartido entre <script> clasicos, asi que la
+            // const de mas arriba no llega hasta aca. Si se rota, hay que cambiar
+            // el valor en los DOS lugares (y en la regla WAF de Cloudflare, ver
+            // docker-sbc/README.md seccion 9.5).
+            const SITE_KEY = '24e869f6d8c42b70a9ba08650708f1f2cd7f61acd44fb4db';
 
             // Para probar en tu PC con backend/servidor_local_cotizador.py, cambiá esto
             // temporalmente a 'http://localhost:8080/cotizar' y volvé a poner el dominio
@@ -3869,7 +3887,7 @@
                 cotCalcBtn.disabled = true;
 
                 try {
-                    const response = await fetch(COTIZADOR_API_URL, { method: 'POST', body: formData });
+                    const response = await fetch(COTIZADOR_API_URL, { method: 'POST', headers: { 'X-Site-Key': SITE_KEY }, body: formData });
                     if (!response.ok) throw new Error(`HTTP ${response.status}`);
                     const data = await response.json();
 
@@ -4085,7 +4103,7 @@
                 ordenSubmitBtn.disabled = true;
 
                 try {
-                    const response = await fetch(ORDEN_API_URL, { method: 'POST', body: formData });
+                    const response = await fetch(ORDEN_API_URL, { method: 'POST', headers: { 'X-Site-Key': SITE_KEY }, body: formData });
                     if (!response.ok) throw new Error(`HTTP ${response.status}`);
                     const data = await response.json();
 
@@ -4218,7 +4236,7 @@
                 cfSubmitBtn.disabled = true;
 
                 try {
-                    const response = await fetch(CONTACTO_API_URL, { method: 'POST', body: formData });
+                    const response = await fetch(CONTACTO_API_URL, { method: 'POST', headers: { 'X-Site-Key': SITE_KEY }, body: formData });
                     if (!response.ok) throw new Error(`HTTP ${response.status}`);
                     const data = await response.json();
 
@@ -4544,7 +4562,7 @@
                     try {
                         const response = await fetch(CHAT_ESTADO_ORDEN_API_URL, {
                             method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
+                            headers: { 'Content-Type': 'application/json', 'X-Site-Key': SITE_KEY },
                             body: JSON.stringify({ numeroOrden, telefono }),
                         });
                         if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -4618,7 +4636,7 @@
                 try {
                     const response = await fetch(CHAT_API_URL, {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
+                        headers: { 'Content-Type': 'application/json', 'X-Site-Key': SITE_KEY },
                         body: JSON.stringify({ message: mensaje, sessionId: chatSessionId }),
                     });
                     if (!response.ok) throw new Error(`HTTP ${response.status}`);
