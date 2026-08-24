@@ -3942,8 +3942,9 @@
 
             // --- Orden de trabajo -----------------------------------------------
             // Formulario que dispara un segundo workflow de n8n (independiente del
-            // de cotización) para generar una orden de trabajo real. Por ahora ese
-            // workflow es un stub que solo devuelve un número de orden fijo.
+            // de cotización) para generar una orden de trabajo real: inserta la
+            // orden en Supabase, sube el archivo a Google Drive y manda los mails
+            // de confirmación (ver docker-sbc/n8n-workflows/orden-trabajo.json).
 
             function actualizarNombreArchivoOrden() {
                 ordenArchivoNombre.textContent = ordenArchivo ? ordenArchivo.name : 'Ningún archivo adjunto';
@@ -4415,8 +4416,7 @@
 
     <script>
         (() => {
-            // TODO: reemplazar por la URL publica una vez armado el tunnel de
-            // Cloudflare (mismo patron que COTIZADOR_API_URL/ORDEN_API_URL).
+            // Ya apunta a la URL publica, mismo patron que COTIZADOR_API_URL/ORDEN_API_URL.
             const CHAT_API_URL = 'https://internal.lamaquineria3d.com.ar/webhook/chat';
 
             // Webhook aparte, sin pasar por el Agente ni por ningun tool-calling --
