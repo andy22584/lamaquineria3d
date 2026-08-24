@@ -1892,40 +1892,19 @@
             margin: 0 auto;
         }
 
-        .seguimiento-form {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            max-width: 480px;
+        .seguimiento-card {
+            max-width: 380px;
             margin: 40px auto 0;
+            background: linear-gradient(165deg, rgba(255, 255, 255, .06) 0%, rgba(255, 255, 255, .02) 100%);
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: var(--radius-lg);
+            padding: 28px 26px 24px;
+            box-shadow: var(--shadow-md);
             text-align: left;
         }
 
-        .seguimiento-form-fields {
-            flex: 1 1 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            min-width: 0;
-        }
-
-        .seguimiento-form-fields .form-field {
-            margin-bottom: 0;
-        }
-
-        .seguimiento-form .btn {
-            flex: 0 0 auto;
-        }
-
-        @media (max-width: 560px) {
-            .seguimiento-form {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .seguimiento-form .btn {
-                justify-content: center;
-            }
+        .seguimiento-card .form-field {
+            margin-bottom: 16px;
         }
 
         .seguimiento-modal-mensaje {
@@ -3111,8 +3090,8 @@
                     Ingresá el número de orden y el teléfono que usaste al pedir para ver en qué estado está. Es lo
                     mismo que te contesta El Maquinista en el chat, solo que acá no hace falta escribirle.
                 </p>
-                <form class="seguimiento-form" id="seguimiento-form" novalidate>
-                    <div class="seguimiento-form-fields">
+                <div class="seguimiento-card">
+                    <form class="seguimiento-form" id="seguimiento-form" novalidate>
                         <div class="form-field">
                             <label for="seguimiento-numero">Número de orden</label>
                             <input type="text" id="seguimiento-numero" inputmode="numeric" placeholder="Ej: 42">
@@ -3121,11 +3100,11 @@
                             <label for="seguimiento-telefono">Teléfono</label>
                             <input type="tel" id="seguimiento-telefono" placeholder="El que usaste al pedir">
                         </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary" id="seguimiento-btn">
-                        <span>Consultar estado</span>
-                    </button>
-                </form>
+                        <button type="submit" class="btn btn-primary orden-submit-btn" id="seguimiento-btn">
+                            <span>Consultar estado</span>
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </section>
