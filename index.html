@@ -1894,16 +1894,22 @@
 
         .seguimiento-form {
             display: flex;
-            flex-wrap: wrap;
-            align-items: flex-end;
+            align-items: center;
             gap: 16px;
-            max-width: 560px;
+            max-width: 480px;
             margin: 40px auto 0;
             text-align: left;
         }
 
-        .seguimiento-form .form-field {
-            flex: 1 1 200px;
+        .seguimiento-form-fields {
+            flex: 1 1 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            min-width: 0;
+        }
+
+        .seguimiento-form-fields .form-field {
             margin-bottom: 0;
         }
 
@@ -1911,29 +1917,22 @@
             flex: 0 0 auto;
         }
 
-        .seguimiento-resultado {
-            display: none;
-            max-width: 480px;
-            margin: 24px auto 0;
-            background: rgba(255, 255, 255, .06);
-            border: 1px solid rgba(255, 255, 255, .12);
-            border-radius: var(--radius);
-            padding: 18px 20px;
-            color: rgba(255, 255, 255, .9);
-            font-size: .92rem;
-            line-height: 1.6;
+        @media (max-width: 560px) {
+            .seguimiento-form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .seguimiento-form .btn {
+                justify-content: center;
+            }
+        }
+
+        .seguimiento-modal-mensaje {
+            color: rgba(255, 255, 255, .85);
+            font-size: .95rem;
+            line-height: 1.7;
             white-space: pre-line;
-            text-align: left;
-        }
-
-        .seguimiento-resultado.visible {
-            display: block;
-        }
-
-        .seguimiento-resultado.error {
-            border-color: rgba(255, 123, 174, .4);
-            background: rgba(255, 123, 174, .08);
-            color: #FFD7E8;
         }
 
         /* =====================
@@ -3113,22 +3112,43 @@
                     mismo que te contesta El Maquinista en el chat, solo que acá no hace falta escribirle.
                 </p>
                 <form class="seguimiento-form" id="seguimiento-form" novalidate>
-                    <div class="form-field">
-                        <label for="seguimiento-numero">Número de orden</label>
-                        <input type="text" id="seguimiento-numero" inputmode="numeric" placeholder="Ej: 42">
-                    </div>
-                    <div class="form-field">
-                        <label for="seguimiento-telefono">Teléfono</label>
-                        <input type="tel" id="seguimiento-telefono" placeholder="El que usaste al pedir">
+                    <div class="seguimiento-form-fields">
+                        <div class="form-field">
+                            <label for="seguimiento-numero">Número de orden</label>
+                            <input type="text" id="seguimiento-numero" inputmode="numeric" placeholder="Ej: 42">
+                        </div>
+                        <div class="form-field">
+                            <label for="seguimiento-telefono">Teléfono</label>
+                            <input type="tel" id="seguimiento-telefono" placeholder="El que usaste al pedir">
+                        </div>
                     </div>
                     <button type="submit" class="btn btn-primary" id="seguimiento-btn">
-                        <span id="seguimiento-btn-text">Consultar estado</span>
+                        <span>Consultar estado</span>
                     </button>
                 </form>
-                <p class="seguimiento-resultado" id="seguimiento-resultado" role="status" aria-live="polite"></p>
             </div>
         </div>
     </section>
+
+    <!-- ===== SEGUIMIENTO: MODAL DE RESULTADO ===== -->
+    <div class="cotizador-modal-backdrop" id="seguimiento-modal-backdrop">
+        <div class="cotizador-modal" role="dialog" aria-modal="true" aria-labelledby="seguimiento-modal-title">
+            <button type="button" class="cotizador-modal-close" id="seguimiento-modal-close" title="Cerrar"
+                aria-label="Cerrar">✕</button>
+
+            <div class="cotizador-modal-loading" id="seguimiento-modal-loading">
+                <div class="viewer-spinner" aria-hidden="true"></div>
+                <span>Consultando…</span>
+            </div>
+
+            <div class="cotizador-modal-content" id="seguimiento-modal-content">
+                <h3 class="cotizador-modal-title" id="seguimiento-modal-title">Estado de tu pedido</h3>
+                <p class="seguimiento-modal-mensaje" id="seguimiento-modal-mensaje"></p>
+            </div>
+
+            <p class="cotizador-modal-error" id="seguimiento-modal-error" role="alert"></p>
+        </div>
+    </div>
 
     <!-- ===== FAQ ===== -->
     <section id="faq" class="section" aria-labelledby="faq-title">
@@ -4942,30 +4962,48 @@
             // ===== Seguimiento de pedido (seccion standalone, fuera del chat) =====
             // Mismo webhook y mismo criterio que el mini-formulario de adentro del
             // chat (ver mostrarFormOrden mas arriba) -- separado para que sea
-            // descubrible sin tener que saber primero que existe el chat.
+            // descubrible sin tener que saber primero que existe el chat. El
+            // resultado se muestra en un modal aparte, mismo patron que ya usa
+            // el cotizador (cotizador-modal-backdrop), reusando esas mismas
+            // clases de CSS en vez de duplicarlas.
             const seguimientoForm = document.getElementById('seguimiento-form');
-            if (seguimientoForm) {
+            const seguimientoModalBackdrop = document.getElementById('seguimiento-modal-backdrop');
+            if (seguimientoForm && seguimientoModalBackdrop) {
                 const seguimientoNumero = document.getElementById('seguimiento-numero');
                 const seguimientoTelefono = document.getElementById('seguimiento-telefono');
-                const seguimientoBtn = document.getElementById('seguimiento-btn');
-                const seguimientoBtnText = document.getElementById('seguimiento-btn-text');
-                const seguimientoResultado = document.getElementById('seguimiento-resultado');
+                const seguimientoModalClose = document.getElementById('seguimiento-modal-close');
+                const seguimientoModalLoading = document.getElementById('seguimiento-modal-loading');
+                const seguimientoModalContent = document.getElementById('seguimiento-modal-content');
+                const seguimientoModalMensaje = document.getElementById('seguimiento-modal-mensaje');
+                const seguimientoModalError = document.getElementById('seguimiento-modal-error');
+
+                function abrirSeguimientoModal() {
+                    seguimientoModalBackdrop.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                }
+
+                function cerrarSeguimientoModal() {
+                    seguimientoModalBackdrop.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
 
                 seguimientoForm.addEventListener('submit', async (e) => {
                     e.preventDefault();
                     const numeroOrden = seguimientoNumero.value.trim();
                     const telefono = seguimientoTelefono.value.trim();
 
-                    seguimientoResultado.classList.remove('visible', 'error');
+                    seguimientoModalContent.classList.remove('active');
+                    seguimientoModalLoading.classList.remove('active');
+                    seguimientoModalError.classList.remove('visible');
+                    abrirSeguimientoModal();
 
                     if (!numeroOrden || !telefono) {
-                        seguimientoResultado.textContent = 'Completá los dos datos.';
-                        seguimientoResultado.classList.add('visible', 'error');
+                        seguimientoModalError.textContent = 'Completá los dos datos.';
+                        seguimientoModalError.classList.add('visible');
                         return;
                     }
 
-                    seguimientoBtn.disabled = true;
-                    seguimientoBtnText.textContent = 'Consultando…';
+                    seguimientoModalLoading.classList.add('active');
 
                     try {
                         const response = await fetch(CHAT_ESTADO_ORDEN_API_URL, {
@@ -4975,18 +5013,25 @@
                         });
                         if (!response.ok) throw new Error(`HTTP ${response.status}`);
                         const data = await response.json();
-                        seguimientoResultado.textContent =
+                        seguimientoModalLoading.classList.remove('active');
+                        seguimientoModalMensaje.textContent =
                             data.mensaje || 'No pudimos consultar la orden. Probá de nuevo en un rato.';
-                        seguimientoResultado.classList.add('visible');
+                        seguimientoModalContent.classList.add('active');
                     } catch (err) {
                         console.error(err);
-                        seguimientoResultado.textContent =
+                        seguimientoModalLoading.classList.remove('active');
+                        seguimientoModalError.textContent =
                             'No pudimos consultar el estado en este momento. Escribinos por Instagram @lamaquineria.3d.';
-                        seguimientoResultado.classList.add('visible', 'error');
-                    } finally {
-                        seguimientoBtn.disabled = false;
-                        seguimientoBtnText.textContent = 'Consultar estado';
+                        seguimientoModalError.classList.add('visible');
                     }
+                });
+
+                seguimientoModalClose.addEventListener('click', cerrarSeguimientoModal);
+                seguimientoModalBackdrop.addEventListener('click', (e) => {
+                    if (e.target === seguimientoModalBackdrop) cerrarSeguimientoModal();
+                });
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && seguimientoModalBackdrop.classList.contains('active')) cerrarSeguimientoModal();
                 });
             }
 
