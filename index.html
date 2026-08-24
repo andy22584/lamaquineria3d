@@ -1868,6 +1868,144 @@
         }
 
         /* =====================
+           SEGUIMIENTO DE PEDIDO
+        ===================== */
+        #seguimiento {
+            background: var(--navy-dark);
+        }
+
+        #seguimiento .section-title,
+        #faq .section-title {
+            color: var(--white);
+        }
+
+        #seguimiento .section-subtitle,
+        #faq .section-subtitle {
+            color: rgba(255, 255, 255, .65);
+        }
+
+        .seguimiento-inner {
+            text-align: center;
+        }
+
+        .seguimiento-inner .section-subtitle {
+            margin: 0 auto;
+        }
+
+        .seguimiento-form {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            gap: 16px;
+            max-width: 560px;
+            margin: 40px auto 0;
+            text-align: left;
+        }
+
+        .seguimiento-form .form-field {
+            flex: 1 1 200px;
+            margin-bottom: 0;
+        }
+
+        .seguimiento-form .btn {
+            flex: 0 0 auto;
+        }
+
+        .seguimiento-resultado {
+            display: none;
+            max-width: 480px;
+            margin: 24px auto 0;
+            background: rgba(255, 255, 255, .06);
+            border: 1px solid rgba(255, 255, 255, .12);
+            border-radius: var(--radius);
+            padding: 18px 20px;
+            color: rgba(255, 255, 255, .9);
+            font-size: .92rem;
+            line-height: 1.6;
+            white-space: pre-line;
+            text-align: left;
+        }
+
+        .seguimiento-resultado.visible {
+            display: block;
+        }
+
+        .seguimiento-resultado.error {
+            border-color: rgba(255, 123, 174, .4);
+            background: rgba(255, 123, 174, .08);
+            color: #FFD7E8;
+        }
+
+        /* =====================
+           FAQ
+        ===================== */
+        #faq {
+            background: #121D42;
+        }
+
+        .faq-list {
+            max-width: 720px;
+            margin: 40px auto 0;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid rgba(255, 255, 255, .12);
+        }
+
+        .faq-question {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            width: 100%;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 20px 4px;
+            font-family: var(--font);
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--white);
+            text-align: left;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .faq-icon {
+            flex: 0 0 auto;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .08);
+            color: var(--magenta-light);
+            font-size: 1.2rem;
+            font-weight: 400;
+            line-height: 1;
+            transition: transform var(--spring), background var(--transition);
+        }
+
+        .faq-item.open .faq-icon {
+            background: var(--magenta);
+            color: var(--white);
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height var(--spring);
+        }
+
+        .faq-answer p {
+            padding: 0 4px 20px;
+            color: rgba(255, 255, 255, .68);
+            font-size: .92rem;
+            line-height: 1.7;
+        }
+
+        /* =====================
            CONTACTO
         ===================== */
         #contacto {
@@ -2537,6 +2675,8 @@
                 <a href="#cotizador" data-i18n="nav.cot">Cotizador</a>
                 <a href="#tienda" data-i18n="nav.tienda">Tienda</a>
                 <a href="#clientes" data-i18n="nav.cli">Clientes</a>
+                <a href="#seguimiento" data-i18n="nav.seg">Seguimiento</a>
+                <a href="#faq" data-i18n="nav.faq">FAQ</a>
                 <a href="#contacto" data-i18n="nav.con">Contacto</a>
                 <a href="https://www.mercadolibre.com.ar" target="_blank" rel="noopener" class="nav-cta">
                     🛒 <span data-i18n="tienda.cta">Comprar</span>
@@ -2555,6 +2695,8 @@
         <a href="#cotizador" onclick="closeMobileMenu()" data-i18n="nav.cot">Cotizador</a>
         <a href="#tienda" onclick="closeMobileMenu()" data-i18n="nav.tienda">Tienda</a>
         <a href="#clientes" onclick="closeMobileMenu()" data-i18n="nav.cli">Clientes</a>
+        <a href="#seguimiento" onclick="closeMobileMenu()" data-i18n="nav.seg">Seguimiento</a>
+        <a href="#faq" onclick="closeMobileMenu()" data-i18n="nav.faq">FAQ</a>
         <a href="#contacto" onclick="closeMobileMenu()" data-i18n="nav.con">Contacto</a>
         <a href="https://www.mercadolibre.com.ar" target="_blank" rel="noopener" class="nav-cta">🛒 <span
                 data-i18n="tienda.cta">Comprar</span></a>
@@ -2960,6 +3102,143 @@
         </div>
     </section>
 
+    <!-- ===== SEGUIMIENTO DE PEDIDO ===== -->
+    <section id="seguimiento" class="section" aria-labelledby="seguimiento-title">
+        <div class="container">
+            <div class="seguimiento-inner">
+                <span class="section-label">Seguimiento</span>
+                <h2 class="section-title" id="seguimiento-title">¿Ya hiciste tu pedido?</h2>
+                <p class="section-subtitle">
+                    Ingresá el número de orden y el teléfono que usaste al pedir para ver en qué estado está. Es lo
+                    mismo que te contesta El Maquinista en el chat, solo que acá no hace falta escribirle.
+                </p>
+                <form class="seguimiento-form" id="seguimiento-form" novalidate>
+                    <div class="form-field">
+                        <label for="seguimiento-numero">Número de orden</label>
+                        <input type="text" id="seguimiento-numero" inputmode="numeric" placeholder="Ej: 42">
+                    </div>
+                    <div class="form-field">
+                        <label for="seguimiento-telefono">Teléfono</label>
+                        <input type="tel" id="seguimiento-telefono" placeholder="El que usaste al pedir">
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="seguimiento-btn">
+                        <span id="seguimiento-btn-text">Consultar estado</span>
+                    </button>
+                </form>
+                <p class="seguimiento-resultado" id="seguimiento-resultado" role="status" aria-live="polite"></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FAQ ===== -->
+    <section id="faq" class="section" aria-labelledby="faq-title">
+        <div class="container">
+            <span class="section-label">Preguntas frecuentes</span>
+            <h2 class="section-title" id="faq-title">¿Tenés dudas?</h2>
+            <div class="faq-list" id="faq-list">
+                <div class="faq-item">
+                    <button type="button" class="faq-question" aria-expanded="false">
+                        <span>¿Qué materiales usan?</span>
+                        <span class="faq-icon" aria-hidden="true">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Trabajamos con PLA, PETG y TPU.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button type="button" class="faq-question" aria-expanded="false">
+                        <span>¿Qué formato de archivo necesito?</span>
+                        <span class="faq-icon" aria-hidden="true">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>STL o 3MF. Se sube directo en la sección Cotizador del sitio.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button type="button" class="faq-question" aria-expanded="false">
+                        <span>¿Pueden diseñar la pieza si no tengo el archivo 3D?</span>
+                        <span class="faq-icon" aria-hidden="true">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Sí, pero tiene costo aparte — depende del tipo de pieza, así que se cotiza puntualmente.
+                            Escribinos por Instagram o el formulario de contacto contándonos qué necesitás.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button type="button" class="faq-question" aria-expanded="false">
+                        <span>¿Qué tamaño máximo pueden imprimir?</span>
+                        <span class="faq-icon" aria-hidden="true">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Hasta 270 × 270 × 270 mm de una sola pieza. Si la tuya es más grande, se puede dividir en
+                            partes e imprimirlas por separado para ensamblar después.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button type="button" class="faq-question" aria-expanded="false">
+                        <span>¿Cómo pido un presupuesto?</span>
+                        <span class="faq-icon" aria-hidden="true">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Subiendo tu archivo en la sección Cotizador, sin necesidad de contactarnos antes. Tené en
+                            cuenta que el presupuesto es aproximado: puede variar según detalles que solo se ven al
+                            preparar la impresión, como los soportes.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button type="button" class="faq-question" aria-expanded="false">
+                        <span>¿Cómo se paga?</span>
+                        <span class="faq-icon" aria-hidden="true">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Una vez confirmado el presupuesto, te contactamos por mail para coordinar el pago.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button type="button" class="faq-question" aria-expanded="false">
+                        <span>¿Hacen envíos o retiro en persona?</span>
+                        <span class="faq-icon" aria-hidden="true">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Por ahora solo envíos, a cargo del comprador. Se coordina una vez confirmado el pedido.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button type="button" class="faq-question" aria-expanded="false">
+                        <span>¿Cuánto tarda mi pedido?</span>
+                        <span class="faq-icon" aria-hidden="true">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>El tiempo depende de la cola de impresión — no damos un plazo fijo, pero podés ir viendo
+                            el avance del estado de tu orden vos mismo.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button type="button" class="faq-question" aria-expanded="false">
+                        <span>¿Cómo consulto el estado de mi pedido?</span>
+                        <span class="faq-icon" aria-hidden="true">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Con tu número de orden y tu teléfono, acá arriba en <a href="#seguimiento"
+                                style="color: var(--magenta-light); text-decoration: underline;">Seguimiento</a>, o
+                            charlando con El Maquinista en el chat.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button type="button" class="faq-question" aria-expanded="false">
+                        <span>¿Tengo otra duda, cómo los contacto?</span>
+                        <span class="faq-icon" aria-hidden="true">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Por Instagram <a href="https://www.instagram.com/lamaquineria.3d" target="_blank"
+                                rel="noopener" style="color: var(--magenta-light); text-decoration: underline;">@lamaquineria.3d</a>
+                            o el formulario de contacto del sitio, aquí abajo.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- ===== CONTACTO ===== -->
     <section id="contacto" class="section" aria-labelledby="contacto-title">
         <div class="container">
@@ -3085,6 +3364,8 @@
                 <a href="#cotizador" data-i18n="nav.cot">Cotizador</a>
                 <a href="#tienda" data-i18n="nav.tienda">Tienda</a>
                 <a href="#clientes" data-i18n="nav.cli">Clientes</a>
+                <a href="#seguimiento" data-i18n="nav.seg">Seguimiento</a>
+                <a href="#faq" data-i18n="nav.faq">FAQ</a>
                 <a href="#contacto" data-i18n="nav.con">Contacto</a>
             </nav>
             <div class="footer-bottom">
@@ -4656,6 +4937,76 @@
                 } finally {
                     sendBtn.disabled = false;
                 }
+            });
+
+            // ===== Seguimiento de pedido (seccion standalone, fuera del chat) =====
+            // Mismo webhook y mismo criterio que el mini-formulario de adentro del
+            // chat (ver mostrarFormOrden mas arriba) -- separado para que sea
+            // descubrible sin tener que saber primero que existe el chat.
+            const seguimientoForm = document.getElementById('seguimiento-form');
+            if (seguimientoForm) {
+                const seguimientoNumero = document.getElementById('seguimiento-numero');
+                const seguimientoTelefono = document.getElementById('seguimiento-telefono');
+                const seguimientoBtn = document.getElementById('seguimiento-btn');
+                const seguimientoBtnText = document.getElementById('seguimiento-btn-text');
+                const seguimientoResultado = document.getElementById('seguimiento-resultado');
+
+                seguimientoForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const numeroOrden = seguimientoNumero.value.trim();
+                    const telefono = seguimientoTelefono.value.trim();
+
+                    seguimientoResultado.classList.remove('visible', 'error');
+
+                    if (!numeroOrden || !telefono) {
+                        seguimientoResultado.textContent = 'Completá los dos datos.';
+                        seguimientoResultado.classList.add('visible', 'error');
+                        return;
+                    }
+
+                    seguimientoBtn.disabled = true;
+                    seguimientoBtnText.textContent = 'Consultando…';
+
+                    try {
+                        const response = await fetch(CHAT_ESTADO_ORDEN_API_URL, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'X-Site-Key': SITE_KEY },
+                            body: JSON.stringify({ numeroOrden, telefono }),
+                        });
+                        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                        const data = await response.json();
+                        seguimientoResultado.textContent =
+                            data.mensaje || 'No pudimos consultar la orden. Probá de nuevo en un rato.';
+                        seguimientoResultado.classList.add('visible');
+                    } catch (err) {
+                        console.error(err);
+                        seguimientoResultado.textContent =
+                            'No pudimos consultar el estado en este momento. Escribinos por Instagram @lamaquineria.3d.';
+                        seguimientoResultado.classList.add('visible', 'error');
+                    } finally {
+                        seguimientoBtn.disabled = false;
+                        seguimientoBtnText.textContent = 'Consultar estado';
+                    }
+                });
+            }
+
+            // ===== FAQ: acordeon, uno abierto a la vez =====
+            document.querySelectorAll('.faq-item').forEach((item) => {
+                const btn = item.querySelector('.faq-question');
+                const answer = item.querySelector('.faq-answer');
+                btn.addEventListener('click', () => {
+                    const abierta = item.classList.contains('open');
+                    document.querySelectorAll('.faq-item.open').forEach((otro) => {
+                        if (otro !== item) {
+                            otro.classList.remove('open');
+                            otro.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+                            otro.querySelector('.faq-answer').style.maxHeight = null;
+                        }
+                    });
+                    item.classList.toggle('open', !abierta);
+                    btn.setAttribute('aria-expanded', String(!abierta));
+                    answer.style.maxHeight = !abierta ? `${answer.scrollHeight}px` : null;
+                });
             });
         })();
     </script>
