@@ -1,0 +1,25 @@
+{
+  "categorias": [
+    {
+      "nombre": "Figuras",
+      "fotos": [
+        "Figuras/benchys.jpeg",
+        "Figuras/dragon.jpeg"
+      ]
+    },
+    {
+      "nombre": "Light Boxes",
+      "fotos": [
+        "Light Boxes/lcdj.jpg",
+        "Light Boxes/myc.jpg"
+      ]
+    },
+    {
+      "nombre": "Sensoriales",
+      "fotos": [
+        "Sensoriales/estrella.jpeg",
+        "Sensoriales/pulpo.jpeg"
+      ]
+    }
+  ]
+}

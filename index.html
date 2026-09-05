@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="La Maquinería 3D — Impresión 3D. PLA, PETG, TPU y más. Cotizá tu pieza online.">
     <title>La Maquinería 3D | Impresión 3D</title>
+    <link rel="icon" href="images/favicon.ico" sizes="any">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
@@ -836,6 +837,205 @@
             --card-accent: #D97706;
             --badge-bg: rgba(217, 119, 6, .18);
             --badge-color: #FBBF24;
+        }
+
+        /* =====================
+           TRABAJOS TERMINADOS (galeria armada desde images/manifest.json,
+           ver scripts/generar_galeria.py)
+        ===================== */
+        /* Todo el sitio es oscuro (hero, sobre-nosotros, materiales,
+           cotizador, etc. -- ninguna seccion usa el blanco de <body>), asi
+           que esta seccion nueva necesita el mismo tratamiento que
+           #materiales/#tienda/etc., o se queda blanca por default. */
+        #trabajos {
+            background: var(--navy-dark);
+        }
+
+        #trabajos .section-title {
+            color: var(--white);
+        }
+
+        #trabajos .section-subtitle {
+            color: rgba(255, 255, 255, .7);
+        }
+
+        .galeria-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 48px;
+            margin-bottom: 28px;
+        }
+
+        .galeria-tab {
+            font-family: var(--font);
+            font-size: .88rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, .75);
+            background: rgba(255, 255, 255, .06);
+            border: 1px solid rgba(255, 255, 255, .14);
+            border-radius: 100px;
+            padding: 9px 20px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .galeria-tab:hover {
+            background: rgba(255, 255, 255, .1);
+            border-color: rgba(255, 255, 255, .25);
+        }
+
+        .galeria-tab.active {
+            background: var(--magenta);
+            border-color: var(--magenta);
+            color: var(--white);
+        }
+
+        .galeria-carrusel-wrap {
+            position: relative;
+        }
+
+        .galeria-carrusel {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            padding-bottom: 6px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: var(--magenta-light) transparent;
+        }
+
+        .galeria-carrusel::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .galeria-carrusel::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .galeria-carrusel::-webkit-scrollbar-thumb {
+            background: rgba(224, 0, 106, .4);
+            border-radius: 8px;
+        }
+
+        .galeria-foto-btn {
+            flex: 0 0 auto;
+            width: 260px;
+            height: 260px;
+            scroll-snap-align: start;
+            border: 1px solid rgba(255, 255, 255, .08);
+            border-radius: var(--radius);
+            overflow: hidden;
+            padding: 0;
+            cursor: zoom-in;
+            background: rgba(255, 255, 255, .04);
+            transition: transform var(--spring), border-color var(--transition);
+        }
+
+        .galeria-foto-btn:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255, 255, 255, .2);
+        }
+
+        .galeria-foto-btn img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .galeria-carrusel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, .2);
+            background: rgba(255, 255, 255, .08);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 2;
+        }
+
+        .galeria-carrusel-nav:hover {
+            background: var(--magenta);
+            color: var(--white);
+            border-color: var(--magenta);
+        }
+
+        .galeria-carrusel-nav.prev {
+            left: -18px;
+        }
+
+        .galeria-carrusel-nav.next {
+            right: -18px;
+        }
+
+        .galeria-lightbox-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(13, 13, 13, .9);
+            backdrop-filter: blur(6px);
+            z-index: 2100;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .galeria-lightbox-backdrop.active {
+            display: flex;
+        }
+
+        .galeria-lightbox-img {
+            max-width: 90vw;
+            max-height: 85vh;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .galeria-lightbox-close {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            background: rgba(255, 255, 255, .1);
+            border: 1px solid rgba(255, 255, 255, .2);
+            color: var(--white);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+
+        .galeria-lightbox-close:hover {
+            background: var(--magenta);
+            border-color: var(--magenta);
+            transform: rotate(90deg);
+        }
+
+        @media (max-width: 640px) {
+
+            .galeria-carrusel-nav {
+                display: none;
+            }
+
+            .galeria-foto-btn {
+                width: 200px;
+                height: 200px;
+            }
         }
 
         /* =====================
@@ -2650,6 +2850,7 @@
             <div class="nav-links" id="nav-links">
                 <a href="#sobre-nosotros" data-i18n="nav.sobre">Sobre nosotros</a>
                 <a href="#materiales" data-i18n="nav.mat">Materiales</a>
+                <a href="#trabajos" id="nav-trabajos-desktop" style="display:none;" data-i18n="nav.trab">Trabajos</a>
                 <a href="#cotizador" data-i18n="nav.cot">Cotizador</a>
                 <a href="#tienda" data-i18n="nav.tienda">Tienda</a>
                 <a href="#clientes" data-i18n="nav.cli">Clientes</a>
@@ -2670,6 +2871,7 @@
     <div class="mobile-menu" id="mobile-menu" role="dialog" aria-label="Menú">
         <a href="#sobre-nosotros" onclick="closeMobileMenu()" data-i18n="nav.sobre">Sobre nosotros</a>
         <a href="#materiales" onclick="closeMobileMenu()" data-i18n="nav.mat">Materiales</a>
+        <a href="#trabajos" id="nav-trabajos-mobile" style="display:none;" onclick="closeMobileMenu()" data-i18n="nav.trab">Trabajos</a>
         <a href="#cotizador" onclick="closeMobileMenu()" data-i18n="nav.cot">Cotizador</a>
         <a href="#tienda" onclick="closeMobileMenu()" data-i18n="nav.tienda">Tienda</a>
         <a href="#clientes" onclick="closeMobileMenu()" data-i18n="nav.cli">Clientes</a>
@@ -2812,6 +3014,24 @@
                         <span class="material-use-tag" data-i18n="mat.tpu.use4">Amortiguadores</span>
                     </div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== TRABAJOS TERMINADOS =====
+         Oculta por default: la muestra el JS de abajo del todo solo si
+         images/manifest.json trae al menos una categoria con fotos (ver
+         scripts/generar_galeria.py). -->
+    <section id="trabajos" class="section" aria-labelledby="trabajos-title" style="display:none;">
+        <div class="container">
+            <span class="section-label">Trabajos terminados</span>
+            <h2 class="section-title" id="trabajos-title">Algunas piezas que ya imprimimos</h2>
+            <p class="section-subtitle">Una muestra de proyectos reales entregados a clientes, organizados por tipo.
+            </p>
+
+            <div class="galeria-tabs" id="galeria-tabs"></div>
+            <div class="galeria-carrusel-wrap" id="galeria-carrusel-wrap">
+                <div class="galeria-carrusel" id="galeria-carrusel"></div>
             </div>
         </div>
     </section>
@@ -3129,6 +3349,13 @@
         </div>
     </div>
 
+    <!-- ===== TRABAJOS: LIGHTBOX DE FOTO AMPLIADA ===== -->
+    <div class="galeria-lightbox-backdrop" id="galeria-lightbox-backdrop">
+        <button type="button" class="galeria-lightbox-close" id="galeria-lightbox-close" title="Cerrar"
+            aria-label="Cerrar">✕</button>
+        <img class="galeria-lightbox-img" id="galeria-lightbox-img" alt="">
+    </div>
+
     <!-- ===== FAQ ===== -->
     <section id="faq" class="section" aria-labelledby="faq-title">
         <div class="container">
@@ -3360,6 +3587,7 @@
             <nav class="footer-links" aria-label="Links del footer">
                 <a href="#sobre-nosotros" data-i18n="nav.sobre">Sobre nosotros</a>
                 <a href="#materiales" data-i18n="nav.mat">Materiales</a>
+                <a href="#trabajos" id="nav-trabajos-footer" style="display:none;" data-i18n="nav.trab">Trabajos</a>
                 <a href="#cotizador" data-i18n="nav.cot">Cotizador</a>
                 <a href="#tienda" data-i18n="nav.tienda">Tienda</a>
                 <a href="#clientes" data-i18n="nav.cli">Clientes</a>
@@ -5032,6 +5260,159 @@
                     answer.style.maxHeight = !abierta ? `${answer.scrollHeight}px` : null;
                 });
             });
+
+            // ===== Trabajos terminados: galeria armada desde images/manifest.json =====
+            // Sitio estatico (GitHub Pages, sin backend) -- no hay forma de listar
+            // carpetas en vivo desde el navegador, asi que el manifest lo genera
+            // scripts/generar_galeria.py de antemano (correrlo + pushear cada vez
+            // que se agreguen/saquen fotos o carpetas dentro de images/).
+            (async () => {
+                const trabajosSection = document.getElementById('trabajos');
+                const tabsContenedor = document.getElementById('galeria-tabs');
+                const carruselWrap = document.getElementById('galeria-carrusel-wrap');
+                const carrusel = document.getElementById('galeria-carrusel');
+                const navLinksTrabajos = [
+                    document.getElementById('nav-trabajos-desktop'),
+                    document.getElementById('nav-trabajos-mobile'),
+                    document.getElementById('nav-trabajos-footer'),
+                ].filter(Boolean);
+                if (!trabajosSection || !tabsContenedor || !carruselWrap || !carrusel) return;
+
+                function mostrarSeccionTrabajos() {
+                    trabajosSection.style.display = '';
+                    navLinksTrabajos.forEach((a) => { a.style.display = ''; });
+                }
+
+                function rutaCodificada(ruta) {
+                    // Codifica cada segmento del path por separado (no el "/" que
+                    // los separa) -- soporta nombres de carpeta/archivo con
+                    // espacios o caracteres como "&" (ej. "Home & Deco/foto 1.jpg").
+                    return ruta.split('/').map(encodeURIComponent).join('/');
+                }
+
+                function desplazarCarrusel(direccion) {
+                    const primera = carrusel.querySelector('.galeria-foto-btn');
+                    const paso = primera ? primera.offsetWidth + 16 : 260;
+                    carrusel.scrollBy({ left: direccion * paso, behavior: 'smooth' });
+                }
+
+                const lightboxBackdrop = document.getElementById('galeria-lightbox-backdrop');
+                const lightboxImg = document.getElementById('galeria-lightbox-img');
+                const lightboxClose = document.getElementById('galeria-lightbox-close');
+
+                function abrirLightbox(src, alt) {
+                    lightboxImg.src = src;
+                    lightboxImg.alt = alt;
+                    lightboxBackdrop.classList.add('active');
+                }
+                function cerrarLightbox() {
+                    lightboxBackdrop.classList.remove('active');
+                    lightboxImg.src = '';
+                }
+                lightboxClose.addEventListener('click', cerrarLightbox);
+                lightboxBackdrop.addEventListener('click', (e) => {
+                    if (e.target === lightboxBackdrop) cerrarLightbox();
+                });
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && lightboxBackdrop.classList.contains('active')) cerrarLightbox();
+                });
+
+                let data;
+                try {
+                    const res = await fetch('images/manifest.json', { cache: 'no-store' });
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                    data = await res.json();
+                } catch (err) {
+                    return; // manifest.json todavia no existe o esta mal -- seccion queda oculta
+                }
+
+                const categorias = (data && Array.isArray(data.categorias)) ? data.categorias : [];
+                const categoriasConFotos = categorias.filter((c) => Array.isArray(c.fotos) && c.fotos.length > 0);
+                if (categoriasConFotos.length === 0) return; // seccion queda oculta
+
+                // Un solo carrusel compartido por todas las categorias -- las
+                // pestañas de arriba solo cambian que fotos tiene adentro, no
+                // hay un carrusel por categoria (ver charla con el dueño,
+                // 2026-09-05: prefirio esto a apilar un carrusel por cada una).
+                let flechaPrev = null;
+                let flechaNext = null;
+
+                function actualizarFlechas() {
+                    // Solo hacen falta si las fotos de la categoria activa no
+                    // entran todas sin scroll -- mismo motivo que antes: sin
+                    // este chequeo, una categoria con pocas fotos mostraba las
+                    // flechas igual, pegadas a los bordes del contenedor y
+                    // lejos de las fotos.
+                    const haceFalta = carrusel.scrollWidth > carrusel.clientWidth + 1;
+                    if (haceFalta && !flechaPrev) {
+                        flechaPrev = document.createElement('button');
+                        flechaPrev.type = 'button';
+                        flechaPrev.className = 'galeria-carrusel-nav prev';
+                        flechaPrev.setAttribute('aria-label', 'Anterior');
+                        flechaPrev.textContent = '‹';
+                        flechaPrev.addEventListener('click', () => desplazarCarrusel(-1));
+
+                        flechaNext = document.createElement('button');
+                        flechaNext.type = 'button';
+                        flechaNext.className = 'galeria-carrusel-nav next';
+                        flechaNext.setAttribute('aria-label', 'Siguiente');
+                        flechaNext.textContent = '›';
+                        flechaNext.addEventListener('click', () => desplazarCarrusel(1));
+
+                        carruselWrap.appendChild(flechaPrev);
+                        carruselWrap.appendChild(flechaNext);
+                    } else if (!haceFalta && flechaPrev) {
+                        flechaPrev.remove();
+                        flechaNext.remove();
+                        flechaPrev = null;
+                        flechaNext = null;
+                    }
+                }
+
+                function mostrarCategoria(cat) {
+                    carrusel.scrollLeft = 0;
+                    carrusel.innerHTML = '';
+                    cat.fotos.forEach((foto) => {
+                        const src = `images/${rutaCodificada(foto)}`;
+                        const btn = document.createElement('button');
+                        btn.type = 'button';
+                        btn.className = 'galeria-foto-btn';
+                        const img = document.createElement('img');
+                        img.src = src;
+                        img.alt = cat.nombre || '';
+                        img.loading = 'lazy';
+                        btn.appendChild(img);
+                        btn.addEventListener('click', () => abrirLightbox(src, img.alt));
+                        carrusel.appendChild(btn);
+                    });
+
+                    tabsContenedor.querySelectorAll('.galeria-tab').forEach((tab) => {
+                        const esActiva = tab.dataset.categoria === cat.nombre;
+                        tab.classList.toggle('active', esActiva);
+                        tab.setAttribute('aria-pressed', String(esActiva));
+                    });
+
+                    // requestAnimationFrame: espera a que el navegador aplique
+                    // el nuevo contenido antes de medir scrollWidth/clientWidth
+                    // (si se mide en el mismo tick puede quedar con el layout
+                    // de la categoria anterior).
+                    requestAnimationFrame(actualizarFlechas);
+                }
+
+                categoriasConFotos.forEach((cat) => {
+                    const tab = document.createElement('button');
+                    tab.type = 'button';
+                    tab.className = 'galeria-tab';
+                    tab.textContent = cat.nombre || '';
+                    tab.dataset.categoria = cat.nombre || '';
+                    tab.setAttribute('aria-pressed', 'false');
+                    tab.addEventListener('click', () => mostrarCategoria(cat));
+                    tabsContenedor.appendChild(tab);
+                });
+
+                mostrarSeccionTrabajos();
+                mostrarCategoria(categoriasConFotos[0]);
+            })();
         })();
     </script>
 </body>
