@@ -840,7 +840,7 @@
         }
 
         /* =====================
-           TRABAJOS TERMINADOS (galeria armada desde images/manifest.json,
+           TRABAJOS TERMINADOS (galeria armada desde images/galeria/manifest.json,
            ver scripts/generar_galeria.py)
         ===================== */
         /* Todo el sitio es oscuro (hero, sobre-nosotros, materiales,
@@ -2042,29 +2042,48 @@
             text-align: center;
         }
 
-        .clientes-coming {
-            margin: 48px auto 0;
-            max-width: 560px;
+        .clientes-inner .galeria-carrusel-wrap {
+            margin-top: 44px;
+        }
+
+        /* El carrusel en si (scroll-snap, flechas, scrollbar) reusa
+           .galeria-carrusel-wrap/.galeria-carrusel de la sección de
+           Trabajos -- solo la tarjeta de cada item es distinta (logo
+           con object-fit:contain sobre fondo claro, no una foto que
+           llena el recuadro). */
+        .cliente-logo-card {
+            flex: 0 0 auto;
+            width: 200px;
+            height: 120px;
+            scroll-snap-align: start;
             background: rgba(255, 255, 255, .04);
-            border-radius: var(--radius-lg);
-            padding: 52px 40px;
-            border: 2px dashed rgba(255, 255, 255, .18);
-            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, .08);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
         }
 
-        .clientes-coming:hover {
-            border-color: rgba(224, 0, 106, .35);
-            background: rgba(255, 255, 255, .06);
+        /* Se agrega por JS solo cuando los logos entran todos sin necesitar
+           scroll -- con overflow real, centrar el flex container puede
+           "tapar" el primer/ultimo logo al hacer scroll en algunos
+           navegadores, por eso no se deja centrado siempre. */
+        .clientes-carrusel.centrado {
+            justify-content: center;
         }
 
-        .clientes-coming-icon {
-            font-size: 3rem;
-            margin-bottom: 16px;
+        .cliente-logo-card img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
         }
 
-        .clientes-coming p {
-            font-size: 1rem;
-            color: rgba(255, 255, 255, .65);
+        @media (max-width: 640px) {
+            .cliente-logo-card {
+                width: 160px;
+                height: 100px;
+            }
         }
 
         /* =====================
@@ -2469,7 +2488,6 @@
                 font-size: 2rem;
             }
 
-            .clientes-coming,
             .contacto-card {
                 padding: 32px 20px;
             }
@@ -2853,7 +2871,7 @@
                 <a href="#trabajos" id="nav-trabajos-desktop" style="display:none;" data-i18n="nav.trab">Trabajos</a>
                 <a href="#cotizador" data-i18n="nav.cot">Cotizador</a>
                 <a href="#tienda" data-i18n="nav.tienda">Tienda</a>
-                <a href="#clientes" data-i18n="nav.cli">Clientes</a>
+                <a href="#clientes" id="nav-clientes-desktop" style="display:none;" data-i18n="nav.cli">Clientes</a>
                 <a href="#seguimiento" data-i18n="nav.seg">Seguimiento</a>
                 <a href="#faq" data-i18n="nav.faq">FAQ</a>
                 <a href="#contacto" data-i18n="nav.con">Contacto</a>
@@ -2874,7 +2892,7 @@
         <a href="#trabajos" id="nav-trabajos-mobile" style="display:none;" onclick="closeMobileMenu()" data-i18n="nav.trab">Trabajos</a>
         <a href="#cotizador" onclick="closeMobileMenu()" data-i18n="nav.cot">Cotizador</a>
         <a href="#tienda" onclick="closeMobileMenu()" data-i18n="nav.tienda">Tienda</a>
-        <a href="#clientes" onclick="closeMobileMenu()" data-i18n="nav.cli">Clientes</a>
+        <a href="#clientes" id="nav-clientes-mobile" style="display:none;" onclick="closeMobileMenu()" data-i18n="nav.cli">Clientes</a>
         <a href="#seguimiento" onclick="closeMobileMenu()" data-i18n="nav.seg">Seguimiento</a>
         <a href="#faq" onclick="closeMobileMenu()" data-i18n="nav.faq">FAQ</a>
         <a href="#contacto" onclick="closeMobileMenu()" data-i18n="nav.con">Contacto</a>
@@ -3020,8 +3038,8 @@
 
     <!-- ===== TRABAJOS TERMINADOS =====
          Oculta por default: la muestra el JS de abajo del todo solo si
-         images/manifest.json trae al menos una categoria con fotos (ver
-         scripts/generar_galeria.py). -->
+         images/galeria/manifest.json trae al menos una categoria con
+         fotos (ver scripts/generar_galeria.py). -->
     <section id="trabajos" class="section" aria-labelledby="trabajos-title" style="display:none;">
         <div class="container">
             <span class="section-label">Trabajos terminados</span>
@@ -3286,15 +3304,17 @@
     </section>
 
     <!-- ===== CLIENTES ===== -->
-    <section id="clientes" class="section" aria-labelledby="clientes-title">
+    <!-- ===== CLIENTES =====
+         Oculta por default: la muestra el JS de abajo del todo solo si
+         images/clientes/manifest.json trae al menos un logo (ver
+         scripts/generar_galeria.py). -->
+    <section id="clientes" class="section" aria-labelledby="clientes-title" style="display:none;">
         <div class="container">
             <div class="clientes-inner">
                 <span class="section-label" data-i18n="cli.label">Clientes</span>
                 <h2 class="section-title" id="clientes-title" data-i18n="cli.title">Algunos de nuestros clientes</h2>
-                <div class="clientes-coming" aria-live="polite">
-                    <div class="clientes-coming-icon" aria-hidden="true">🏆</div>
-                    <p data-i18n="cli.coming">Próximamente vas a encontrar aquí los logos y testimonios de quienes ya
-                        confiaron en nosotros.</p>
+                <div class="galeria-carrusel-wrap" id="clientes-carrusel-wrap">
+                    <div class="galeria-carrusel clientes-carrusel" id="clientes-carrusel"></div>
                 </div>
             </div>
         </div>
@@ -3590,7 +3610,7 @@
                 <a href="#trabajos" id="nav-trabajos-footer" style="display:none;" data-i18n="nav.trab">Trabajos</a>
                 <a href="#cotizador" data-i18n="nav.cot">Cotizador</a>
                 <a href="#tienda" data-i18n="nav.tienda">Tienda</a>
-                <a href="#clientes" data-i18n="nav.cli">Clientes</a>
+                <a href="#clientes" id="nav-clientes-footer" style="display:none;" data-i18n="nav.cli">Clientes</a>
                 <a href="#seguimiento" data-i18n="nav.seg">Seguimiento</a>
                 <a href="#faq" data-i18n="nav.faq">FAQ</a>
                 <a href="#contacto" data-i18n="nav.con">Contacto</a>
@@ -5261,7 +5281,7 @@
                 });
             });
 
-            // ===== Trabajos terminados: galeria armada desde images/manifest.json =====
+            // ===== Trabajos terminados: galeria armada desde images/galeria/manifest.json =====
             // Sitio estatico (GitHub Pages, sin backend) -- no hay forma de listar
             // carpetas en vivo desde el navegador, asi que el manifest lo genera
             // scripts/generar_galeria.py de antemano (correrlo + pushear cada vez
@@ -5319,7 +5339,7 @@
 
                 let data;
                 try {
-                    const res = await fetch('images/manifest.json', { cache: 'no-store' });
+                    const res = await fetch('images/galeria/manifest.json', { cache: 'no-store' });
                     if (!res.ok) throw new Error(`HTTP ${res.status}`);
                     data = await res.json();
                 } catch (err) {
@@ -5373,7 +5393,7 @@
                     carrusel.scrollLeft = 0;
                     carrusel.innerHTML = '';
                     cat.fotos.forEach((foto) => {
-                        const src = `images/${rutaCodificada(foto)}`;
+                        const src = `images/galeria/${rutaCodificada(foto)}`;
                         const btn = document.createElement('button');
                         btn.type = 'button';
                         btn.className = 'galeria-foto-btn';
@@ -5412,6 +5432,84 @@
 
                 mostrarSeccionTrabajos();
                 mostrarCategoria(categoriasConFotos[0]);
+            })();
+
+            // ===== Clientes: carrusel de logos armado desde images/clientes/manifest.json =====
+            // Mismo motivo que la galeria de Trabajos (sitio estatico, sin
+            // backend): scripts/generar_galeria.py escanea images/clientes/
+            // (carpeta plana, sin categorias -- cada imagen suelta es un
+            // logo) y escribe el manifest que este bloque lee con fetch.
+            // Por ahora solo logos, sin comentarios/reseñas (a pedido del
+            // dueño, 2026-09-05).
+            (async () => {
+                const clientesSection = document.getElementById('clientes');
+                const carruselWrap = document.getElementById('clientes-carrusel-wrap');
+                const carrusel = document.getElementById('clientes-carrusel');
+                const navLinksClientes = [
+                    document.getElementById('nav-clientes-desktop'),
+                    document.getElementById('nav-clientes-mobile'),
+                    document.getElementById('nav-clientes-footer'),
+                ].filter(Boolean);
+                if (!clientesSection || !carruselWrap || !carrusel) return;
+
+                let data;
+                try {
+                    const res = await fetch('images/clientes/manifest.json', { cache: 'no-store' });
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                    data = await res.json();
+                } catch (err) {
+                    return; // manifest.json todavia no existe o esta mal -- seccion queda oculta
+                }
+
+                const logos = (data && Array.isArray(data.logos)) ? data.logos : [];
+                if (logos.length === 0) return; // seccion queda oculta
+
+                logos.forEach((archivo) => {
+                    const src = `images/clientes/${archivo.split('/').map(encodeURIComponent).join('/')}`;
+                    const card = document.createElement('div');
+                    card.className = 'cliente-logo-card';
+                    const img = document.createElement('img');
+                    img.src = src;
+                    img.alt = '';
+                    img.loading = 'lazy';
+                    card.appendChild(img);
+                    carrusel.appendChild(card);
+                });
+
+                clientesSection.style.display = '';
+                navLinksClientes.forEach((a) => { a.style.display = ''; });
+
+                // Flechas solo si los logos realmente no entran sin scroll --
+                // mismo chequeo que en la galeria de Trabajos. Si entran
+                // todos, ademas se centran (ver .clientes-carrusel.centrado).
+                requestAnimationFrame(() => {
+                    const desborda = carrusel.scrollWidth > carrusel.clientWidth + 1;
+                    carrusel.classList.toggle('centrado', !desborda);
+                    if (!desborda) return;
+
+                    function desplazar(direccion) {
+                        const primera = carrusel.querySelector('.cliente-logo-card');
+                        const paso = primera ? primera.offsetWidth + 20 : 200;
+                        carrusel.scrollBy({ left: direccion * paso, behavior: 'smooth' });
+                    }
+
+                    const prevBtn = document.createElement('button');
+                    prevBtn.type = 'button';
+                    prevBtn.className = 'galeria-carrusel-nav prev';
+                    prevBtn.setAttribute('aria-label', 'Anterior');
+                    prevBtn.textContent = '‹';
+                    prevBtn.addEventListener('click', () => desplazar(-1));
+
+                    const nextBtn = document.createElement('button');
+                    nextBtn.type = 'button';
+                    nextBtn.className = 'galeria-carrusel-nav next';
+                    nextBtn.setAttribute('aria-label', 'Siguiente');
+                    nextBtn.textContent = '›';
+                    nextBtn.addEventListener('click', () => desplazar(1));
+
+                    carruselWrap.appendChild(prevBtn);
+                    carruselWrap.appendChild(nextBtn);
+                });
             })();
         })();
     </script>
