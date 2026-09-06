@@ -10,6 +10,7 @@
     {
       "nombre": "Home & Deco",
       "fotos": [
+        "Home & Deco/portaauricular.jpeg",
         "Home & Deco/portallave.jpg"
       ]
     },
@@ -27,7 +28,7 @@
         "Sensoriales/cuboinfinito.jpg",
         "Sensoriales/estrella.jpeg",
         "Sensoriales/pulpo.jpeg",
-	"Sensoriales/tiburon.jpeg"
+        "Sensoriales/tiburon.jpeg"
       ]
     }
   ]
