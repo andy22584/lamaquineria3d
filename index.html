@@ -122,6 +122,29 @@
 
         .section {
             padding: 96px 0;
+            position: relative;
+        }
+
+        /* Mismo cuadriculado sutil del Hero (.hero-grid), ahora en todas las
+           secciones -- a diferencia del de #sobre-nosotros::before (que se
+           desvanece, ver mas abajo), este es parejo en toda la seccion. */
+        .section::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, .03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, .03) 1px, transparent 1px);
+            background-size: 48px 48px;
+            pointer-events: none;
+        }
+
+        /* Sin esto, el cuadriculado (position:absolute) queda pintado
+           encima del contenido real (que es estatico, sin position) en
+           vez de detras. */
+        .section > .container {
+            position: relative;
+            z-index: 1;
         }
 
         .section-label {
@@ -617,6 +640,29 @@
         ===================== */
         #sobre-nosotros {
             background: var(--navy-dark);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Continua el mismo color con el que termina el degradé del Hero
+           (135deg, terminando en #2D1B6B) y lo desvanece hacia abajo --
+           sin esto, el color cortaba en seco contra el navy-dark solido de
+           esta seccion, en vez de sentirse como una transicion. El
+           cuadriculado en si ya lo pone .section::after (parejo, en todas
+           las secciones) -- este ::before solo se encarga del color, y
+           pinta detras de ese cuadriculado por ser ::before (va antes en
+           el orden de pintado que ::after). */
+        #sobre-nosotros::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 320px;
+            background: linear-gradient(135deg, #2D1B6B 0%, var(--navy-dark) 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+            mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+            pointer-events: none;
         }
 
         #sobre-nosotros .section-title {
@@ -1042,21 +1088,9 @@
            COTIZADOR
         ===================== */
         #cotizador {
-            background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 60%, #3D1A80 100%);
+            background: #121D42;
             position: relative;
             overflow: hidden;
-        }
-
-        #cotizador::before {
-            content: '';
-            position: absolute;
-            top: -100px;
-            right: -100px;
-            width: 500px;
-            height: 500px;
-            background: radial-gradient(circle, rgba(224, 0, 106, .25) 0%, transparent 70%);
-            border-radius: 50%;
-            pointer-events: none;
         }
 
         .cotizador-inner {
@@ -2053,8 +2087,8 @@
            llena el recuadro). */
         .cliente-logo-card {
             flex: 0 0 auto;
-            width: 200px;
-            height: 120px;
+            width: 400px;
+            height: 240px;
             scroll-snap-align: start;
             background: rgba(255, 255, 255, .04);
             border: 1px solid rgba(255, 255, 255, .08);
@@ -2081,8 +2115,8 @@
 
         @media (max-width: 640px) {
             .cliente-logo-card {
-                width: 160px;
-                height: 100px;
+                width: 320px;
+                height: 200px;
             }
         }
 
@@ -2244,6 +2278,14 @@
             align-items: center;
             gap: 16px;
             transition: transform var(--spring);
+        }
+
+        /* Se agrega por JS cuando la tienda esta deshabilitada (ver
+           secciones.json) -- sin el item de Mercado Libre, el de Instagram
+           queda pegado a la izquierda con la tarjeta vacia al lado; esto lo
+           centra en vez de dejarlo descolgado. */
+        .contacto-card.solo-instagram .contacto-item {
+            justify-content: center;
         }
 
         .contacto-item:hover {
@@ -2866,16 +2908,17 @@
                 <img src="images/logo.png" alt="La Maquinería 3D">
             </a>
             <div class="nav-links" id="nav-links">
-                <a href="#sobre-nosotros" data-i18n="nav.sobre">Sobre nosotros</a>
-                <a href="#materiales" data-i18n="nav.mat">Materiales</a>
+                <a href="#sobre-nosotros" id="nav-sobre-desktop" data-i18n="nav.sobre">Sobre nosotros</a>
+                <a href="#materiales" id="nav-materiales-desktop" data-i18n="nav.mat">Materiales</a>
                 <a href="#trabajos" id="nav-trabajos-desktop" style="display:none;" data-i18n="nav.trab">Trabajos</a>
-                <a href="#cotizador" data-i18n="nav.cot">Cotizador</a>
-                <a href="#tienda" data-i18n="nav.tienda">Tienda</a>
+                <a href="#cotizador" id="nav-cotizador-desktop" data-i18n="nav.cot">Cotizador</a>
+                <a href="#seguimiento" id="nav-seguimiento-desktop" data-i18n="nav.seg">Seguimiento</a>
                 <a href="#clientes" id="nav-clientes-desktop" style="display:none;" data-i18n="nav.cli">Clientes</a>
-                <a href="#seguimiento" data-i18n="nav.seg">Seguimiento</a>
-                <a href="#faq" data-i18n="nav.faq">FAQ</a>
-                <a href="#contacto" data-i18n="nav.con">Contacto</a>
-                <a href="https://www.mercadolibre.com.ar" target="_blank" rel="noopener" class="nav-cta">
+                <a href="#tienda" id="nav-tienda-desktop" data-i18n="nav.tienda">Tienda</a>
+                <a href="#faq" id="nav-faq-desktop" data-i18n="nav.faq">FAQ</a>
+                <a href="#contacto" id="nav-contacto-desktop" data-i18n="nav.con">Contacto</a>
+                <a href="https://www.mercadolibre.com.ar" target="_blank" rel="noopener" class="nav-cta"
+                    id="nav-comprar-desktop">
                     🛒 <span data-i18n="tienda.cta">Comprar</span>
                 </a>
             </div>
@@ -2887,16 +2930,16 @@
 
     <!-- Mobile menu -->
     <div class="mobile-menu" id="mobile-menu" role="dialog" aria-label="Menú">
-        <a href="#sobre-nosotros" onclick="closeMobileMenu()" data-i18n="nav.sobre">Sobre nosotros</a>
-        <a href="#materiales" onclick="closeMobileMenu()" data-i18n="nav.mat">Materiales</a>
+        <a href="#sobre-nosotros" id="nav-sobre-mobile" onclick="closeMobileMenu()" data-i18n="nav.sobre">Sobre nosotros</a>
+        <a href="#materiales" id="nav-materiales-mobile" onclick="closeMobileMenu()" data-i18n="nav.mat">Materiales</a>
         <a href="#trabajos" id="nav-trabajos-mobile" style="display:none;" onclick="closeMobileMenu()" data-i18n="nav.trab">Trabajos</a>
-        <a href="#cotizador" onclick="closeMobileMenu()" data-i18n="nav.cot">Cotizador</a>
-        <a href="#tienda" onclick="closeMobileMenu()" data-i18n="nav.tienda">Tienda</a>
+        <a href="#cotizador" id="nav-cotizador-mobile" onclick="closeMobileMenu()" data-i18n="nav.cot">Cotizador</a>
+        <a href="#seguimiento" id="nav-seguimiento-mobile" onclick="closeMobileMenu()" data-i18n="nav.seg">Seguimiento</a>
         <a href="#clientes" id="nav-clientes-mobile" style="display:none;" onclick="closeMobileMenu()" data-i18n="nav.cli">Clientes</a>
-        <a href="#seguimiento" onclick="closeMobileMenu()" data-i18n="nav.seg">Seguimiento</a>
-        <a href="#faq" onclick="closeMobileMenu()" data-i18n="nav.faq">FAQ</a>
-        <a href="#contacto" onclick="closeMobileMenu()" data-i18n="nav.con">Contacto</a>
-        <a href="https://www.mercadolibre.com.ar" target="_blank" rel="noopener" class="nav-cta">🛒 <span
+        <a href="#tienda" id="nav-tienda-mobile" onclick="closeMobileMenu()" data-i18n="nav.tienda">Tienda</a>
+        <a href="#faq" id="nav-faq-mobile" onclick="closeMobileMenu()" data-i18n="nav.faq">FAQ</a>
+        <a href="#contacto" id="nav-contacto-mobile" onclick="closeMobileMenu()" data-i18n="nav.con">Contacto</a>
+        <a href="https://www.mercadolibre.com.ar" target="_blank" rel="noopener" class="nav-cta" id="nav-comprar-mobile">🛒 <span
                 data-i18n="tienda.cta">Comprar</span></a>
     </div>
 
@@ -3254,72 +3297,6 @@
         </div>
     </div>
 
-    <!-- ===== TIENDA ===== -->
-    <section id="tienda" class="section" aria-labelledby="tienda-title">
-        <div class="container">
-            <div class="tienda-inner">
-                <div class="tienda-visual" aria-hidden="true">
-                    <div class="tienda-icon">🛒</div>
-                    <h3 data-i18n="tienda.card.title">Nuestra tienda en Mercado Libre</h3>
-                    <p data-i18n="tienda.card.desc">Comprá de forma segura con todos los beneficios de la plataforma.
-                    </p>
-                </div>
-                <div class="tienda-content">
-                    <span class="section-label" data-i18n="tienda.label">Tienda Online</span>
-                    <h2 class="section-title" id="tienda-title" data-i18n="tienda.title">Encontranos en Mercado Libre
-                    </h2>
-                    <p class="section-subtitle" data-i18n="tienda.subtitle">Visitá nuestra tienda para ver los productos
-                        disponibles, hacer tu pedido y pagar de forma segura.</p>
-                    <div class="tienda-perks">
-                        <div class="tienda-perk">
-                            <div class="tienda-perk-icon">🛡️</div>
-                            <div>
-                                <h4 data-i18n="tienda.perk1.title">Compra protegida</h4>
-                                <p data-i18n="tienda.perk1.desc">Comprá con la seguridad y garantías de Mercado Libre.
-                                </p>
-                            </div>
-                        </div>
-                        <div class="tienda-perk">
-                            <div class="tienda-perk-icon">💳</div>
-                            <div>
-                                <h4 data-i18n="tienda.perk2.title">Múltiples medios de pago</h4>
-                                <p data-i18n="tienda.perk2.desc">Tarjeta, transferencia, MercadoPago y más.</p>
-                            </div>
-                        </div>
-                        <div class="tienda-perk">
-                            <div class="tienda-perk-icon">🚚</div>
-                            <div>
-                                <h4 data-i18n="tienda.perk3.title">Envíos a todo el país</h4>
-                                <p data-i18n="tienda.perk3.desc">Despachamos con MercadoEnvíos.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <a href="https://www.mercadolibre.com.ar" target="_blank" rel="noopener" class="btn btn-primary"
-                        id="btn-tienda">
-                        🛒 <span data-i18n="tienda.cta">Ir a la tienda</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ===== CLIENTES ===== -->
-    <!-- ===== CLIENTES =====
-         Oculta por default: la muestra el JS de abajo del todo solo si
-         images/clientes/manifest.json trae al menos un logo (ver
-         scripts/generar_galeria.py). -->
-    <section id="clientes" class="section" aria-labelledby="clientes-title" style="display:none;">
-        <div class="container">
-            <div class="clientes-inner">
-                <span class="section-label" data-i18n="cli.label">Clientes</span>
-                <h2 class="section-title" id="clientes-title" data-i18n="cli.title">Algunos de nuestros clientes</h2>
-                <div class="galeria-carrusel-wrap" id="clientes-carrusel-wrap">
-                    <div class="galeria-carrusel clientes-carrusel" id="clientes-carrusel"></div>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- ===== SEGUIMIENTO DE PEDIDO ===== -->
     <section id="seguimiento" class="section" aria-labelledby="seguimiento-title">
         <div class="container">
@@ -3368,6 +3345,71 @@
             <p class="cotizador-modal-error" id="seguimiento-modal-error" role="alert"></p>
         </div>
     </div>
+
+    <!-- ===== CLIENTES =====
+         Oculta por default: la muestra el JS de abajo del todo solo si
+         images/clientes/manifest.json trae al menos un logo (ver
+         scripts/generar_galeria.py). -->
+    <section id="clientes" class="section" aria-labelledby="clientes-title" style="display:none;">
+        <div class="container">
+            <div class="clientes-inner">
+                <span class="section-label" data-i18n="cli.label">Clientes</span>
+                <h2 class="section-title" id="clientes-title" data-i18n="cli.title">Algunos de nuestros clientes</h2>
+                <div class="galeria-carrusel-wrap" id="clientes-carrusel-wrap">
+                    <div class="galeria-carrusel clientes-carrusel" id="clientes-carrusel"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== TIENDA ===== -->
+    <section id="tienda" class="section" aria-labelledby="tienda-title">
+        <div class="container">
+            <div class="tienda-inner">
+                <div class="tienda-visual" aria-hidden="true">
+                    <div class="tienda-icon">🛒</div>
+                    <h3 data-i18n="tienda.card.title">Nuestra tienda en Mercado Libre</h3>
+                    <p data-i18n="tienda.card.desc">Comprá de forma segura con todos los beneficios de la plataforma.
+                    </p>
+                </div>
+                <div class="tienda-content">
+                    <span class="section-label" data-i18n="tienda.label">Tienda Online</span>
+                    <h2 class="section-title" id="tienda-title" data-i18n="tienda.title">Encontranos en Mercado Libre
+                    </h2>
+                    <p class="section-subtitle" data-i18n="tienda.subtitle">Visitá nuestra tienda para ver los productos
+                        disponibles, hacer tu pedido y pagar de forma segura.</p>
+                    <div class="tienda-perks">
+                        <div class="tienda-perk">
+                            <div class="tienda-perk-icon">🛡️</div>
+                            <div>
+                                <h4 data-i18n="tienda.perk1.title">Compra protegida</h4>
+                                <p data-i18n="tienda.perk1.desc">Comprá con la seguridad y garantías de Mercado Libre.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="tienda-perk">
+                            <div class="tienda-perk-icon">💳</div>
+                            <div>
+                                <h4 data-i18n="tienda.perk2.title">Múltiples medios de pago</h4>
+                                <p data-i18n="tienda.perk2.desc">Tarjeta, transferencia, MercadoPago y más.</p>
+                            </div>
+                        </div>
+                        <div class="tienda-perk">
+                            <div class="tienda-perk-icon">🚚</div>
+                            <div>
+                                <h4 data-i18n="tienda.perk3.title">Envíos a todo el país</h4>
+                                <p data-i18n="tienda.perk3.desc">Despachamos con MercadoEnvíos.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="https://www.mercadolibre.com.ar" target="_blank" rel="noopener" class="btn btn-primary"
+                        id="btn-tienda">
+                        🛒 <span data-i18n="tienda.cta">Ir a la tienda</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- ===== TRABAJOS: LIGHTBOX DE FOTO AMPLIADA ===== -->
     <div class="galeria-lightbox-backdrop" id="galeria-lightbox-backdrop">
@@ -3499,7 +3541,7 @@
                     </p>
                 </div>
                 <div class="contacto-right">
-                    <div class="contacto-card">
+                    <div class="contacto-card" id="contacto-card">
                         <div class="contacto-item">
                             <div class="contacto-item-icon">
                                 <img src="images/instagram-icon.jpg" alt="Instagram Logo"
@@ -3511,7 +3553,7 @@
                                     rel="noopener">@lamaquineria.3d</a>
                             </div>
                         </div>
-                        <div class="contacto-item">
+                        <div class="contacto-item" id="contacto-item-tienda">
                             <div class="contacto-item-icon">
                                 <img src="images/mercadolibre-icon.jpg" alt="MercadoLibre Logo"
                                     style="width: 34px; height: 34px; object-fit: contain;">
@@ -3605,15 +3647,15 @@
                 <img src="images/logo.png" alt="La Maquinería 3D">
             </div>
             <nav class="footer-links" aria-label="Links del footer">
-                <a href="#sobre-nosotros" data-i18n="nav.sobre">Sobre nosotros</a>
-                <a href="#materiales" data-i18n="nav.mat">Materiales</a>
+                <a href="#sobre-nosotros" id="nav-sobre-footer" data-i18n="nav.sobre">Sobre nosotros</a>
+                <a href="#materiales" id="nav-materiales-footer" data-i18n="nav.mat">Materiales</a>
                 <a href="#trabajos" id="nav-trabajos-footer" style="display:none;" data-i18n="nav.trab">Trabajos</a>
-                <a href="#cotizador" data-i18n="nav.cot">Cotizador</a>
-                <a href="#tienda" data-i18n="nav.tienda">Tienda</a>
+                <a href="#cotizador" id="nav-cotizador-footer" data-i18n="nav.cot">Cotizador</a>
+                <a href="#seguimiento" id="nav-seguimiento-footer" data-i18n="nav.seg">Seguimiento</a>
                 <a href="#clientes" id="nav-clientes-footer" style="display:none;" data-i18n="nav.cli">Clientes</a>
-                <a href="#seguimiento" data-i18n="nav.seg">Seguimiento</a>
-                <a href="#faq" data-i18n="nav.faq">FAQ</a>
-                <a href="#contacto" data-i18n="nav.con">Contacto</a>
+                <a href="#tienda" id="nav-tienda-footer" data-i18n="nav.tienda">Tienda</a>
+                <a href="#faq" id="nav-faq-footer" data-i18n="nav.faq">FAQ</a>
+                <a href="#contacto" id="nav-contacto-footer" data-i18n="nav.con">Contacto</a>
             </nav>
             <div class="footer-bottom">
                 <p>© <span id="year"></span> La Maquinería 3D. <span data-i18n="footer.rights">Todos los derechos
@@ -4944,6 +4986,65 @@
 
     <script>
         (() => {
+            // ===== secciones.json: enable/disable de secciones enteras de la landing =====
+            // Sitio estatico, mismo patron que aviso.json (banner) e
+            // images/galeria|clientes/manifest.json: un JSON en la raiz que
+            // el dueño edita a mano + pushea para prender/apagar una
+            // seccion sin tocar código. Las secciones "estaticas" (sin
+            // logica propia de mostrar/ocultar) arrancan visibles en el
+            // HTML -- si arrancaran ocultas habria que esperar a este fetch
+            // para que aparezca CUALQUIER contenido del sitio (mala idea
+            // para SEO/sin JS), asi que en vez de eso este bloque las
+            // esconde recien si el JSON dice "disable" -- un flash minimo,
+            // y solo en el caso raro de que algo este deshabilitado de
+            // verdad. Trabajos/Clientes usan su propia logica de
+            // mostrar-si-hay-contenido (mas abajo) y le preguntan a este
+            // mismo promise antes de decidir, para que "disable" siempre
+            // gane sin importar el orden en que resuelvan los fetches.
+            const SECCIONES_CONFIG = {
+                'sobre-nosotros': ['nav-sobre-desktop', 'nav-sobre-mobile', 'nav-sobre-footer'],
+                materiales: ['nav-materiales-desktop', 'nav-materiales-mobile', 'nav-materiales-footer'],
+                cotizador: ['nav-cotizador-desktop', 'nav-cotizador-mobile', 'nav-cotizador-footer'],
+                tienda: ['nav-tienda-desktop', 'nav-tienda-mobile', 'nav-tienda-footer', 'nav-comprar-desktop', 'nav-comprar-mobile'],
+                seguimiento: ['nav-seguimiento-desktop', 'nav-seguimiento-mobile', 'nav-seguimiento-footer'],
+                faq: ['nav-faq-desktop', 'nav-faq-mobile', 'nav-faq-footer'],
+                contacto: ['nav-contacto-desktop', 'nav-contacto-mobile', 'nav-contacto-footer'],
+            };
+
+            const seccionesConfigPromise = (async () => {
+                try {
+                    const res = await fetch('secciones.json', { cache: 'no-store' });
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                    return await res.json();
+                } catch (err) {
+                    return {}; // falta o esta mal el archivo -- todo queda habilitado (fail-open)
+                }
+            })();
+
+            seccionesConfigPromise.then((config) => {
+                Object.entries(SECCIONES_CONFIG).forEach(([seccionId, navIds]) => {
+                    if (config[seccionId] !== 'disable') return;
+
+                    const seccion = document.getElementById(seccionId);
+                    if (seccion) seccion.style.display = 'none';
+                    navIds.forEach((id) => {
+                        const el = document.getElementById(id);
+                        if (el) el.style.display = 'none';
+                    });
+                });
+
+                // Caso especial: sin tienda, el item de Mercado Libre en
+                // Contacto tambien se oculta, y el de Instagram queda
+                // centrado en vez de pegado a la izquierda con la tarjeta
+                // medio vacia al lado.
+                if (config.tienda === 'disable') {
+                    const itemTienda = document.getElementById('contacto-item-tienda');
+                    if (itemTienda) itemTienda.style.display = 'none';
+                    const contactoCard = document.getElementById('contacto-card');
+                    if (contactoCard) contactoCard.classList.add('solo-instagram');
+                }
+            });
+
             // Ya apunta a la URL publica, mismo patron que COTIZADOR_API_URL/ORDEN_API_URL.
             const CHAT_API_URL = 'https://internal.lamaquineria3d.com.ar/webhook/chat';
 
@@ -5298,6 +5399,11 @@
                 ].filter(Boolean);
                 if (!trabajosSection || !tabsContenedor || !carruselWrap || !carrusel) return;
 
+                // Si secciones.json dice "disable" para esta, ni siquiera
+                // vale la pena pedir el manifest de fotos -- gana siempre,
+                // sin importar si hay categorias con contenido o no.
+                if ((await seccionesConfigPromise).trabajos === 'disable') return;
+
                 function mostrarSeccionTrabajos() {
                     trabajosSection.style.display = '';
                     navLinksTrabajos.forEach((a) => { a.style.display = ''; });
@@ -5451,6 +5557,10 @@
                     document.getElementById('nav-clientes-footer'),
                 ].filter(Boolean);
                 if (!clientesSection || !carruselWrap || !carrusel) return;
+
+                // Mismo motivo que en Trabajos: "disable" en secciones.json
+                // gana siempre, sin importar si hay logos cargados o no.
+                if ((await seccionesConfigPromise).clientes === 'disable') return;
 
                 let data;
                 try {

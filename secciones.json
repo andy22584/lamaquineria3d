@@ -1,0 +1,11 @@
+{
+  "sobre-nosotros": "enable",
+  "materiales": "enable",
+  "trabajos": "enable",
+  "cotizador": "enable",
+  "seguimiento": "enable",
+  "clientes": "enable",
+  "tienda": "disable",
+  "faq": "enable",
+  "contacto": "enable"
+}
