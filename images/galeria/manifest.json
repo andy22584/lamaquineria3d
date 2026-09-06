@@ -8,6 +8,12 @@
       ]
     },
     {
+      "nombre": "Home & Deco",
+      "fotos": [
+        "Home & Deco/portallave.jpg"
+      ]
+    },
+    {
       "nombre": "Light Boxes",
       "fotos": [
         "Light Boxes/lcdj.jpg",
@@ -17,6 +23,7 @@
     {
       "nombre": "Sensoriales",
       "fotos": [
+        "Sensoriales/bola.jpeg",
         "Sensoriales/estrella.jpeg",
         "Sensoriales/pulpo.jpeg"
       ]
