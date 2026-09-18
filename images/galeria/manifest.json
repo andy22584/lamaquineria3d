@@ -1,6 +1,16 @@
 {
   "categorias": [
     {
+      "nombre": "Cortantes Cerámica",
+      "fotos": [
+        "Cortantes Cerámica/casas.jpeg",
+        "Cortantes Cerámica/cocina.jpeg",
+        "Cortantes Cerámica/fosiles.jpeg",
+        "Cortantes Cerámica/plantas.jpeg",
+        "Cortantes Cerámica/rodillos.jpeg"
+      ]
+    },
+    {
       "nombre": "Figuras",
       "fotos": [
         "Figuras/benchys.jpeg",
